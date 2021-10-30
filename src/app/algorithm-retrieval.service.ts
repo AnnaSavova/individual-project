@@ -3,6 +3,7 @@ import { Algorithm } from './Algorithm';
 import { HrResidentEgsService } from './algorithm-page/algorithms/algorithm-services/hr-resident-egs/hr-resident-egs.service';
 import { EgsStableMarriageService } from './algorithm-page/algorithms/algorithm-services/smp-man-egs/egs-stable-marriage.service';
 import { GsStableMarriageService } from './algorithm-page/algorithms/algorithm-services/smp-man-gs/gs-stable-marriage.service';
+import { SpapOrigEgsService } from './algorithm-page/algorithms/algorithm-services/spap-orig-egs/spap-orig-egs.service';
 
 
 // ------------------------------------------------------- ALGORITHM TEMPLATE
@@ -155,6 +156,33 @@ export class AlgorithmRetrievalService {
 
     // ADD NEW ALGORITHMS UNDER HERE
 
+    [
+         "spap-orig-egs", {
+           id: "spap-orig-egs",
+           name: "Student-Project Allocation (Project priority)",
+           orientation: ["Student", "Project", "Lecturer"],
+           algorithm: "Student-Project Allocation Algorithm with Project priority",
+           service: this.SpapOrigEgsService,
+           description: "The SPA-P alforightms assigns projects, offered by lectures, to students. To achieve this an extension of the Gale/Shapley algorithm for Hospital-Residents Problem is utilised",
+           helpTextMap: {
+            1:  "Clear the matches of all students, projects and lecturers",
+            2:  "The next student who doesn't have a match and has a non-empty preference list is selected",
+            3:  "The first project on %currentAgent%\'s preference list is selected (%potentialProposee%)",
+            4:  "Check if capacity of %projectLecturer% offering this project is non-empty? If yes: assign %lecturer%'s %worstLproject% as worst. If not %worstLproject% becomes the next non-empty worst project",
+            5:  "Check if %project% is full OR (%projectLecturer% is full AND %project% is %worstLproject%). If yes: delete %project% from %student% and move on to next project",
+            6:  "Assign %project% and %projectLecturer% to %student%.",
+            7:  "Check if %projectLecturer% is oversubscribed. If yes remove %worstLproject% from students lists",
+            8:  "Check if %projectLecturer% is full.",
+            9:  "%projectLecturer% is full so assign %projectLecturer%'s worst non-empty project as worstLproject",
+            10: "Select the next successor of %worstLproject% on %projectLecturer%'s list",
+            11: "Select next %student% who finds %successor% acceptable",
+            12: "Delete %successor% from %student%",
+           },
+           code: [
+             //TODO
+           ]
+         }
+       ],
   ]);
 
   pluralMap: Map<string, string> = new Map([
@@ -168,6 +196,7 @@ export class AlgorithmRetrievalService {
     public gsStableMarriageService: GsStableMarriageService,
     public egsStableMarriageService: EgsStableMarriageService,
     public HrResidentEgsService: HrResidentEgsService,
+    public SpapOrigEgsService: SpapOrigEgsService,
   ) { }
 
   getListOfAlgorithms(): Array<Algorithm> {
