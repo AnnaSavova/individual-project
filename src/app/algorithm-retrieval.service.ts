@@ -154,7 +154,7 @@ export class AlgorithmRetrievalService {
       }
     ],
 
-    // ADD NEW ALGORITHMS UNDER HERE
+    // NEEDS MASSIVE EDITING
 
     [
          "spap-orig-egs", {
@@ -179,7 +179,24 @@ export class AlgorithmRetrievalService {
             12: "Delete %successor% from %student%",
            },
            code: [
-             //TODO
+            "set each student, project and lecturer to be completely free;",
+            "while (some student s is free) and (s has a nonempty list)",
+            "\tp := first project on s's list",
+            "\tl := lecturer offering project on s's list",
+            "\tpz := last project on l's list",
+            "\tif l is non-empty then",
+            "\t\tpz := worst non-empty project on l's list",
+            "\tif p is fully subscribed or (l is fully subscribed and p == pz) then",
+            "\t\t delete p from s's list",
+            "\telse provisionally assign p and l to s",
+            "\t\tif l is over-subscribed then",
+            "\t\t\tfor each student sr with pz in list",
+            "\t\t\t\tremove pz from sr's list",
+            "\t\tif l is fully subscribed then",
+            "\t\t\tpz := last non-empty project on l's list",
+            "\t\t\tfor each successor pt of pz on l's list",
+            "\t\t\t\tfor each student sr where pt in sr's list",
+            "\t\t\t\t\t delete pt from sr's list"
            ]
          }
        ],
