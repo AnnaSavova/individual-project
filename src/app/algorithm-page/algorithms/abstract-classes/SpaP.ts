@@ -2,6 +2,8 @@ import { Agent } from "../interfaces/Agent";
 import { AlgorithmData } from "../interfaces/AlgorithmData";
 import { Step } from "../interfaces/Step";
 
+// NEEDS MASSIVE EDITING
+
 export abstract class SpaP {
 
     abstract group1Name: string;

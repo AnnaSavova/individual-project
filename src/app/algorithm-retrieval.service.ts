@@ -3,6 +3,7 @@ import { Algorithm } from './Algorithm';
 import { HrResidentEgsService } from './algorithm-page/algorithms/algorithm-services/hr-resident-egs/hr-resident-egs.service';
 import { EgsStableMarriageService } from './algorithm-page/algorithms/algorithm-services/smp-man-egs/egs-stable-marriage.service';
 import { GsStableMarriageService } from './algorithm-page/algorithms/algorithm-services/smp-man-gs/gs-stable-marriage.service';
+import { SpapImprovedEgsService } from './algorithm-page/algorithms/algorithm-services/spap-improved-egs/spap-improved-egs.service';
 import { SpapOrigEgsService } from './algorithm-page/algorithms/algorithm-services/spap-orig-egs/spap-orig-egs.service';
 
 
@@ -154,59 +155,102 @@ export class AlgorithmRetrievalService {
       }
     ],
 
-    // NEEDS MASSIVE EDITING
+    // NEEDS MINOR EDITING
 
     [
-         "spap-orig-egs", {
-           id: "spap-orig-egs",
-           name: "Student-Project Allocation (Project priority)",
-           orientation: ["Student", "Project", "Lecturer"],
-           algorithm: "Student-Project Allocation Algorithm with Project priority",
-           service: this.SpapOrigEgsService,
-           description: "The SPA-P alforightms assigns projects, offered by lectures, to students. To achieve this an extension of the Gale/Shapley algorithm for Hospital-Residents Problem is utilised",
-           helpTextMap: {
-            1:  "Clear the matches of all students, projects and lecturers",
-            2:  "The next student who doesn't have a match and has a non-empty preference list is selected",
-            3:  "The first project on %currentAgent%\'s preference list is selected (%potentialProposee%)",
-            4:  "Check if capacity of %projectLecturer% offering this project is non-empty? If yes: assign %lecturer%'s %worstLproject% as worst. If not %worstLproject% becomes the next non-empty worst project",
-            5:  "Check if %project% is full OR (%projectLecturer% is full AND %project% is %worstLproject%). If yes: delete %project% from %student% and move on to next project",
-            6:  "Assign %project% and %projectLecturer% to %student%.",
-            7:  "Check if %projectLecturer% is oversubscribed. If yes remove %worstLproject% from students lists",
-            8:  "Check if %projectLecturer% is full.",
-            9:  "%projectLecturer% is full so assign %projectLecturer%'s worst non-empty project as worstLproject",
-            10: "Select the next successor of %worstLproject% on %projectLecturer%'s list",
-            11: "Select next %student% who finds %successor% acceptable",
-            12: "Delete %successor% from %student%",
-           },
-           code: [
-            "set each student, project and lecturer to be completely free;",
-            "while (some student s is free) and (s has a nonempty list)",
-            "\tp := first project on s's list",
-            "\tl := lecturer offering project on s's list",
-            "\tpz := last project on l's list",
-            "\tif l is non-empty then",
-            "\t\tpz := worst non-empty project on l's list",
-            "\tif p is fully subscribed or (l is fully subscribed and p == pz) then",
-            "\t\t delete p from s's list",
-            "\telse provisionally assign p and l to s",
-            "\t\tif l is over-subscribed then",
-            "\t\t\tfor each student sr with pz in list",
-            "\t\t\t\tremove pz from sr's list",
-            "\t\tif l is fully subscribed then",
-            "\t\t\tpz := last non-empty project on l's list",
-            "\t\t\tfor each successor pt of pz on l's list",
-            "\t\t\t\tfor each student sr where pt in sr's list",
-            "\t\t\t\t\t delete pt from sr's list"
-           ]
-         }
-       ],
+      "spap-orig-egs", {
+        id: "spap-orig-egs",
+        name: "Student-Project Allocation (Project priority)",
+        orientation: ["Student", "Project", "Lecturer"],
+        algorithm: "Student-Project Allocation Algorithm with Project priority",
+        service: this.SpapOrigEgsService,
+        description: "The SPA-P alforightms assigns projects, offered by lectures, to students. To achieve this an extension of the Gale/Shapley algorithm for Hospital-Residents Problem is utilised",
+        helpTextMap: {
+          1:  "Clear the matches of all students, projects and lecturers",
+          2:  "The next student who doesn't have a match and has a non-empty preference list is selected",
+          3:  "The first project on %currentAgent%\'s preference list is selected (%potentialProposee%)",
+          4:  "Check if capacity of %projectLecturer% offering this project is non-empty? If yes: assign %lecturer%'s %worstLproject% as worst. If not %worstLproject% becomes the next non-empty worst project",
+          5:  "Check if %project% is full OR (%projectLecturer% is full AND %project% is %worstLproject%). If yes: delete %project% from %student% and move on to next project",
+          6:  "Assign %project% and %projectLecturer% to %student%.",
+          7:  "Check if %projectLecturer% is oversubscribed. If yes remove %worstLproject% from students lists",
+          8:  "Check if %projectLecturer% is full.",
+          9:  "%projectLecturer% is full so assign %projectLecturer%'s worst non-empty project as worstLproject",
+          10: "Select the next successor of %worstLproject% on %projectLecturer%'s list",
+          11: "Select next %student% who finds %successor% acceptable",
+          12: "Delete %successor% from %student%",
+          },
+        code: [
+          "set each student, project and lecturer to be completely free;",
+          "while (some student s is free) and (s has a nonempty list)",
+          "\tp := first project on s's list",
+          "\tl := lecturer offering project on s's list",
+          "\tpz := last project on l's list",
+          "\tif l is non-empty then",
+          "\t\tpz := worst non-empty project on l's list",
+          "\tif p is fully subscribed or (l is fully subscribed and p == pz) then",
+          "\t\t delete p from s's list",
+          "\telse provisionally assign p and l to s",
+          "\t\tif l is over-subscribed then",
+          "\t\t\tfor random student sr with pz in list",
+          "\t\t\t\tremove pz from sr's list",
+          "\t\tif l is fully subscribed then",
+          "\t\t\tpz := last non-empty project on l's list",
+          "\t\t\tfor each successor pt of pz on l's list",
+          "\t\t\t\tfor each student sr where pt in sr's list",
+          "\t\t\t\t\t delete pt from sr's list",
+        ]
+      }
+    ],
+
+    [
+      "spap-improved-egs", {
+        id: "spap-improved-egs",
+        name: "Improved Student-Project Allocation (Project priority)",
+        orientation: ["Student", "Project", "Lecturer"],
+        equalGroups: false,
+        algorithm: "Student-Project Allocation Algorithm with Project priority",
+        service: this.SpapImprovedEgsService,
+        description: "The SPA-P alforightms assigns projects, offered by lectures, to students. To achieve this an extension of the Gale/Shapley algorithm for Hospital-Residents Problem is utilised",
+        helpTextMap: {
+          1: "All students are unpromoted",
+          2: "The next student who is unassigned and is either unpromoted or has non-empty list is selected (%currentAgent%\)",
+          3: "Check if %currentAgent%\'s preference list is empty and %currentAgent%\ is unpromoted? If yes, promote %currentAgent%\'",
+          4: "The first project on %currentAgent%\'s list is selected",
+        },
+        code: [
+          "set each student to be unpromoted;",
+          "while (some student sj is unassigned) and ((sj has a non-empty list) or (sj is unpromoted))",
+          "if (sj is unpromoted) and (sj has a non-empty list) then",
+          "\tpromote sj",
+          "pj := first project on sj's list",
+          "lk := lecturer offering sj",
+          "sj applies to pj",
+          // UNSURE HOW TO WRITE THIS LINE REQUIRES MORE WORK
+          "\th := first hospital on r's list",
+          "\tif h is fully subscribed then",
+          "\t\tr' := worst resident provisionally assigned to h",
+          "\t\tassign r' to be free (clear match)",
+          "\tprovisionally assign r to h",
+          "\tif h is fully subscribed (after assigning r to h) then",
+          "\t\ts := worst resident provisionally assigned to h",
+          "\t\tfor each successor s' of s on h's list",
+          "\t\t\tremove s' and h from each other's lists",
+          "the stable matching consists of all n engagements"
+        ]
+      }
+    ],
   ]);
+
+  
 
   pluralMap: Map<string, string> = new Map([
     ["Man", "Men"],
     ["Woman", "Women"],
     ["Resident", "Residents"],
-    ["Hospital", "Hospitals"]
+    ["Hospital", "Hospitals"],
+    ["Student", "Students"],
+    ["Project", "Projects"],
+    ["Lecturer", "Lecturers"],
   ]);
 
   constructor(
@@ -214,6 +258,7 @@ export class AlgorithmRetrievalService {
     public egsStableMarriageService: EgsStableMarriageService,
     public HrResidentEgsService: HrResidentEgsService,
     public SpapOrigEgsService: SpapOrigEgsService,
+    public SpapImprovedEgsService: SpapImprovedEgsService,
   ) { }
 
   getListOfAlgorithms(): Array<Algorithm> {
