@@ -171,8 +171,19 @@ export class AlgorithmRetrievalService {
           4: "%lecturer% is selected as %preferredProject%'s lecturer",
           5: "%worstProject% is selected as %lecturer%'s worst project",
           6: "Check if %lecturer% is non-empty",
-          //TODO
-          7: "afaf"
+          7: "%lecturer% is non-empty, so %worstProject% is selected as %lecturer%'s worst non-empty project",
+          8: "%currentAgent% applies to %preferredProject%",
+          9: "Check if %preferredProject% is fully subscribed or (%lecturer% is fully subscribed and %preferredProject% is %worstProject%)",
+          10: "%preferredProject% is fully subscribed or (%lecturer% is fully subscribed and %preferredProject% is %worstProject%), so delete %preferredProject% from %currentAgent%'s list",
+          11: "%preferredProject% is not fully subscribed and (%lecturer% is not fully subscribed or %preferredProject% is not %worstProject%), so provisionally assign %currentAgent% to %preferredProject% and %lecturer%",
+          12: "Check if %lecturer% is over-subscribed",
+          13: "%lecturer% is over-subscribed, so %randomStudent% is selected as a random student with %worstProject% in their list",
+          14: "Assign %randomStudent% to be free",
+          15: "Delete %worstProject% from %randomStudent%'s list",
+          16: "Check if %lecturer% is fully subscribed",
+          17: "%lecturer% is fully subscribed, so for each %successor% of %worstProject% on %lecturer%'s list, loop through each %randomStudent% with %successor% in list",
+          18: "For each %randomStudent% with %successor% in list, remove %successor% from %randomStudent%'s list",
+          19: "A stable matching has been found."
         },
         code: [
           "set each student, project and lecturer to be completely free;",
@@ -197,7 +208,44 @@ export class AlgorithmRetrievalService {
           "\t\t\tfor each successor pt of pz on lk's list",
           "\t\t\t\tfor each student sr with pt in list",
           "\t\t\t\t\tremove pt from sr's list",
-          "}"
+          "}" // a stable matching has been found
+        ]
+      }
+    ],
+
+    [
+      "spap-improved-egs", {
+        id: "spap-improved-egs",
+        name: "Improved Student-Project Allocation with Project Priority",
+        orientation: ["Student", "Project", "Lecturer"],
+        equalGroups: true,
+        algorithm: "ImprovedSpaP",
+        service: this.SpapImprovedEgsService,
+        description: "An improvement on Manlove's SpaP algorithm which increases the guaranteed stable matching from half to 3/2",
+        helpTextMap: {
+          1: "Clear the matches of all students, projects and lecturers",
+          2: "Unpromote all students",
+          3: "While there are some students who are not assigned and (have a non-empty list or are unpromoted), select the next one (%currentAgent%)",
+          4: "Check if %currentAgent%'s list is empty and %currentAgent% is unpromoted",
+          5: "%currentAgent%'s list is empty and %currentAgent% is unpromoted, so promote %currentAgent%",
+          6: "%firstProject% is selected as the first project on %currentAgent%'s list",
+          7: "%lecturer% is selected as lecturer who offers %firstProject%",
+          8: "%currentAgent% applies to %firstProject%",
+          9: "Check if ...",
+          10: "ddqwfew, so check if (%currentAgent% is unpromoted or no unpromoted students ....",
+          11: "%currentAgent% is unpromoted or no unpromoted students ...., so reject %currentAgent%",
+          12: "%currentAgent% is promoted and no unpromoted students..., so reject random unpromoted student (...) and match %currentAgent% with %firstProject%",
+          13: "(...A), so check if (...B)",
+          14: "(...B), so reject %currentAgent%",
+          15: "(...B), so check if (...C)",
+          16: "(...C), so match %currentAgent% with %firstProject%",
+          17: "Check if (...M)",
+          18: "(...M), so reject random unpromoted student (...M1)",
+          19: "(...!M), so reject random student (...M1)",
+          20: "A stable matching has been found"
+        },
+        code: [
+          "set each student, project and lecturer to be completely free;"
         ]
       }
     ],
