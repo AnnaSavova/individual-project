@@ -4,11 +4,11 @@ import { Step } from "../interfaces/Step";
 
 // NEEDS MASSIVE EDITING
 
-export abstract class SpaP {
+export abstract class MatchingAlgorithmExtension {
 
-    abstract group1Name: string;
-    abstract group2Name: string;
-    abstract group3Name: string;
+    abstract group1Name: string; // students in SpaP and ImprovedSpaP
+    abstract group2Name: string; // projects in SpaP and ImprovedSpaP
+    abstract group3Name: string; // lecturers in SpaP and ImprovedSpaP
 
     numberOfAgents: number;
     numberOfGroup2Agents: number;
@@ -28,10 +28,10 @@ export abstract class SpaP {
     currentLine: Array<string> = [];
 
     originalGroup1CurrentPreferences: Map<String, Array<String>> = new Map();
-    originalGroup3CurrentPreferences: Map<String, Array<String>> = new Map();
+    originalGroup2CurrentPreferences: Map<String, Array<String>> = new Map();
 
     group1CurrentPreferences: Map<String, Array<String>> = new Map();
-    group3CurrentPreferences: Map<String, Array<String>> = new Map();
+    group2CurrentPreferences: Map<String, Array<String>> = new Map();
     currentlySelectedAgents: Array<string> = [];
     currentLines: Array<Array<string>> = [];
 
@@ -46,9 +46,10 @@ export abstract class SpaP {
     initialise(numberOfAgents: number, numberOfGroup2Agents: number = numberOfAgents, numberOfGroup3Agents:number) {
         this.freeAgentsOfGroup1 = [];
 
-        this.group1Agents = new Map();
-        this.group2Agents = new Map();
-        this.group3Agents = new Map();
+        this.group1Agents = new Map(); // students group in SpaP and ImprovedSpaP
+
+        this.group2Agents = new Map(); // lecturers group in SpaP and ImprovedSpaP
+        this.group3Agents = new Map(); // projects group in SpaP and ImprovedSpaP
 
         this.algorithmData = {
             commands: new Array(),
@@ -58,7 +59,7 @@ export abstract class SpaP {
         this.currentLine = [];
     
         this.group1CurrentPreferences = new Map();
-        this.group3CurrentPreferences = new Map();
+        this.group2CurrentPreferences = new Map();
         this.currentlySelectedAgents = [];
         this.currentLines = [];
     
@@ -89,7 +90,7 @@ export abstract class SpaP {
 
         let currentLetter = 'A';
 
-        for (let i = 1; i < this.numberOfGroup2Agents + 1; i++) {
+        for (let i = 1; i < this.numberOfGroup3Agents + 1; i++) {
             let group2AgentName = this.group2Name + currentLetter;
 
             this.group2Agents.set(group2AgentName, {
@@ -98,14 +99,13 @@ export abstract class SpaP {
                 ranking: new Array()
             });
 
-            //TO ASK LIAM
             currentLetter = String.fromCharCode((((currentLetter.charCodeAt(0) + 1) - 65 ) % 26) + 65);
 
         }
 
         let currLet = 'a'
         for (let i = 1; i < this.numberOfAgents + 1; i++) {
-            let group3AgentName = this.group3Name + currLet;
+            let group3AgentName = this.group2Name + currLet;
 
             this.group3Agents.set(group3AgentName, {
                 name: group3AgentName,
@@ -124,15 +124,15 @@ export abstract class SpaP {
     generatePreferences(): void {
         
         for (let agent of Array.from(this.group1Agents.values())) {
-            let agent1Rankings = Array.from((new Map(this.group2Agents)).values());
+            let agent1Rankings = Array.from((new Map(this.group3Agents)).values());
             this.shuffle(agent1Rankings);
             this.group1Agents.get(agent.name).ranking = agent1Rankings;
         }
 
         for (let agent of Array.from(this.group2Agents.values())) {
-            let agent3Rankings = Array.from((new Map(this.group1Agents)).values());
-            this.shuffle(agent3Rankings);
-            this.group2Agents.get(agent.name).ranking = agent3Rankings;
+            let agent2Rankings = Array.from((new Map(this.group1Agents)).values());
+            this.shuffle(agent2Rankings);
+            this.group2Agents.get(agent.name).ranking = agent2Rankings;
         }
 
     }
@@ -147,22 +147,23 @@ export abstract class SpaP {
             tempCopyList = [];
             // this.group1Agents.get(agent).ranking = preferences.get(this.getLastCharacter(String(agent)));
             for (let preferenceAgent of preferences.get(this.getLastCharacter(String(agent)))) {
-                tempCopyList.push(this.group2Agents.get(this.group2Name + preferenceAgent));
+                tempCopyList.push(this.group3Agents.get(this.group3Name + preferenceAgent));
             }
             this.group1Agents.get(agent).ranking = tempCopyList;
         }
 
-        for (let agent of Array.from(this.group2Agents.keys())) {
+        for (let agent of Array.from(this.group3Agents.keys())) {
             tempCopyList = [];
             // this.group1Agents.get(agent).ranking = preferences.get(this.getLastCharacter(String(agent)));
             for (let preferenceAgent of preferences.get(this.getLastCharacter(String(agent)))) {
-                tempCopyList.push(this.group1Agents.get(this.group1Name + preferenceAgent));
+                tempCopyList.push(this.group3Agents.get(this.group3Name + preferenceAgent));
             }
             this.group2Agents.get(agent).ranking = tempCopyList;
         }
     
         console.log(this.group1Agents);
-        console.log(this.group2Agents);
+        console.log(this.group2Agents); 
+        console.log(this.group3Agents); //TODO : potentially remove later after testing
 
     }
 
@@ -180,6 +181,8 @@ export abstract class SpaP {
         }
     }
 
+
+    // TO DO might need changes 
 
     getGroupRankings(agents: Map<String, Agent>): Map<String, Array<String>> {
 
@@ -224,7 +227,7 @@ export abstract class SpaP {
             matches: new Map(),
             stepVariables: stepVariables,
             group1CurrentPreferences: this.clone(this.group1CurrentPreferences),
-            group2CurrentPreferences: this.clone(this.group3CurrentPreferences),
+            group2CurrentPreferences: this.clone(this.group2CurrentPreferences),
             currentlySelectedAgents: JSON.parse(JSON.stringify(this.currentlySelectedAgents)),
             currentLines: JSON.parse(JSON.stringify(this.currentLines)),
             algorithmSpecificData: JSON.parse(JSON.stringify(this.algorithmSpecificData)),
@@ -235,6 +238,8 @@ export abstract class SpaP {
 
     }
 
+
+    // TODO might need to change
 
     getMatches(): Map<String, Array<String>> {
         let matches: Map<String, Array<String>> = new Map();
@@ -321,6 +326,8 @@ export abstract class SpaP {
     }
 
 
+    // TODO : edit with Dr Sofiat's papers
+    
     // check if no unmatched pair like each other more than their current partners
     checkStability(allMatches: Map<String, Array<String>>): boolean {
         let stability = true;
@@ -369,17 +376,23 @@ export abstract class SpaP {
 
     abstract match(): AlgorithmData;
 
-    run(numberOfAgents: number, numberOfGroup2Agents: number = numberOfAgents, preferences: Map<String, Array<String>>): AlgorithmData {
-        if (numberOfGroup2Agents != numberOfAgents) {
-            this.initialise(numberOfAgents, numberOfGroup2Agents, this.numberOfGroup3Agents);
+    run(numberOfAgents: number, numberOfGroup2Agents: number = numberOfAgents, numberOfGroup3Agents: number, preferences1: Map<String, Array<String>>, preferences2: Map<String, Array<String>>): AlgorithmData {
+        if (numberOfGroup2Agents != numberOfAgents || numberOfGroup3Agents != numberOfAgents) {
+            this.initialise(numberOfAgents, numberOfGroup2Agents, numberOfGroup3Agents);
         } else {
-            this.initialise(numberOfAgents, numberOfAgents, numberOfAgents);
+            this.initialise(numberOfAgents, numberOfGroup2Agents, numberOfAgents); // order is student-lecturer-project
         }
         
         this.generateAgents();
 
-        if (preferences) {
-            this.populatePreferences(preferences);
+        if (preferences1) {
+            this.populatePreferences(preferences1);
+        } else {
+            this.generatePreferences();
+        }
+
+        if (preferences2) {
+            this.populatePreferences(preferences2);
         } else {
             this.generatePreferences();
         }
@@ -387,8 +400,8 @@ export abstract class SpaP {
         this.group1CurrentPreferences = this.getGroupRankings(this.group1Agents);
         this.originalGroup1CurrentPreferences = this.getGroupRankings(this.group1Agents);
 
-        this.group3CurrentPreferences = this.getGroupRankings(this.group3Agents);
-        this.originalGroup3CurrentPreferences = this.getGroupRankings(this.group3Agents);
+        this.group2CurrentPreferences = this.getGroupRankings(this.group2Agents);
+        this.originalGroup2CurrentPreferences = this.getGroupRankings(this.group2Agents);
 
         this.match();
 

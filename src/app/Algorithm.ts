@@ -1,5 +1,5 @@
 import { MatchingAlgorithm } from "./algorithm-page/algorithms/abstract-classes/MatchingAlgorithm";
-import { SpaP } from "./algorithm-page/algorithms/abstract-classes/SpaP";
+import { MatchingAlgorithmExtension } from "./algorithm-page/algorithms/abstract-classes/MatchingAlgorithmExtension";
 
 export interface Algorithm {
     id: string;
@@ -7,7 +7,7 @@ export interface Algorithm {
     orientation: Array<string>;
     equalGroups: boolean;
     algorithm: string;
-    service: MatchingAlgorithm | SpaP;
+    service: MatchingAlgorithm | MatchingAlgorithmExtension;
     description: string;
     helpTextMap: Object; // map<number, string>
     code: Array<string>;

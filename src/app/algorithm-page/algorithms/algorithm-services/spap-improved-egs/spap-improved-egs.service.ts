@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { ExtendedGaleShapley } from '../../abstract-classes/ExtendedGaleShapley';
-import { SpaP } from '../../abstract-classes/SpaP';
+import { MatchingAlgorithmExtension } from '../../abstract-classes/MatchingAlgorithmExtension';
 import { Agent } from '../../interfaces/Agent';
 import { AlgorithmData } from '../../interfaces/AlgorithmData';
 
@@ -9,7 +9,7 @@ import { AlgorithmData } from '../../interfaces/AlgorithmData';
 @Injectable({
     providedIn: 'root'
   })
-  export class SpapImprovedEgsService extends SpaP {
+  export class SpapImprovedEgsService extends MatchingAlgorithmExtension {
     match(): AlgorithmData {
         throw new Error('Method not implemented.');
     }

@@ -1,12 +1,12 @@
 import { Agent } from "../interfaces/Agent";
 import { AlgorithmData } from "../interfaces/AlgorithmData";
 import { MatchingAlgorithm } from "./MatchingAlgorithm";
-import { SpaP } from "./SpaP";
+import { MatchingAlgorithmExtension } from "./MatchingAlgorithmExtension";
 
 
 // NEEDS MASSIVE EDITING
 
-export abstract class ImprovedSpaP extends SpaP {
+export abstract class ImprovedSpaP extends MatchingAlgorithmExtension {
 
     match(): AlgorithmData {
 
@@ -42,7 +42,7 @@ export abstract class ImprovedSpaP extends SpaP {
                 this.relevantPreferences.push(proposeeLastChar);
 
                 this.changePreferenceStyle(this.group1CurrentPreferences, agentLastChar, this.originalGroup1CurrentPreferences.get(agentLastChar).findIndex(woman => woman == this.getLastCharacter(potentialProposee.name)), "red");
-                this.changePreferenceStyle(this.group3CurrentPreferences, proposeeLastChar, this.findPositionInMatches(potentialProposee, currentAgent), "red");
+                this.changePreferenceStyle(this.group2CurrentPreferences, proposeeLastChar, this.findPositionInMatches(potentialProposee, currentAgent), "red");
 
                 let redLine = [agentLastChar, proposeeLastChar, "red"];
                 this.currentLines.push(redLine);
