@@ -27,6 +27,6 @@ import { AlgorithmData } from '../../interfaces/AlgorithmData';
     }
   
     group1Name = "student";
-    group2Name = "project";
-    group3Name = "lecturer"
+    group2Name = "lecturer";
+    group3Name = "project"
     }

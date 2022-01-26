@@ -2,13 +2,11 @@ import { Agent } from "../interfaces/Agent";
 import { AlgorithmData } from "../interfaces/AlgorithmData";
 import { Step } from "../interfaces/Step";
 
-// NEEDS MASSIVE EDITING
-
 export abstract class MatchingAlgorithmExtension {
 
     abstract group1Name: string; // students in SpaP and ImprovedSpaP
-    abstract group2Name: string; // projects in SpaP and ImprovedSpaP
-    abstract group3Name: string; // lecturers in SpaP and ImprovedSpaP
+    abstract group2Name: string; // lecturers in SpaP and ImprovedSpaP
+    abstract group3Name: string; // projects in SpaP and ImprovedSpaP
 
     numberOfAgents: number;
     numberOfGroup2Agents: number;
