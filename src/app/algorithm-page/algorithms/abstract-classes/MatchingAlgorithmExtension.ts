@@ -1,6 +1,9 @@
 import { Agent } from "../interfaces/Agent";
 import { AlgorithmData } from "../interfaces/AlgorithmData";
+import { Lecturer } from "../interfaces/Lecturer";
+import { Project } from "../interfaces/Project";
 import { Step } from "../interfaces/Step";
+import { Student } from "../interfaces/Student";
 
 export abstract class MatchingAlgorithmExtension {
 
@@ -14,9 +17,9 @@ export abstract class MatchingAlgorithmExtension {
 
     freeAgentsOfGroup1: Array<String>;
 
-    group1Agents: Map<String, Agent> = new Map();
-    group2Agents: Map<String, Agent> = new Map();
-    group3Agents: Map<String, Agent> = new Map();
+    group1Agents: Map<String, Student> = new Map();
+    group2Agents: Map<String, Lecturer> = new Map();
+    group3Agents: Map<String, Project> = new Map();
 
     algorithmData: AlgorithmData = {
         commands: new Array(),
@@ -73,45 +76,52 @@ export abstract class MatchingAlgorithmExtension {
     }
 
     generateAgents() {
+        // generate students
         for (let i = 1; i < this.numberOfAgents + 1; i++) {
             let group1AgentName = this.group1Name + i;
 
             this.group1Agents.set(group1AgentName, {
                 name: group1AgentName,
                 match: new Array(),
-                ranking: new Array()
+                ranking: new Array(),
+                promoted: false
             });
 
             this.freeAgentsOfGroup1.push(group1AgentName);
 
         }
 
+        // generate lecturers
         let currentLetter = 'A';
 
-        for (let i = 1; i < this.numberOfGroup3Agents + 1; i++) {
+        for (let i = 1; i < this.numberOfGroup2Agents + 1; i++) {
             let group2AgentName = this.group2Name + currentLetter;
 
             this.group2Agents.set(group2AgentName, {
                 name: group2AgentName,
-                match: new Array(),
-                ranking: new Array()
+                //match: new Array(),
+                ranking: new Array(),
+                capacity: Math.floor(Math.random() * (3 - 1 + 1) + 1),    // generate random capacity for each lecturer. TO CHANGE.
+                advising: 0
             });
 
             currentLetter = String.fromCharCode((((currentLetter.charCodeAt(0) + 1) - 65 ) % 26) + 65);
 
         }
 
+        // generate projects
         let currLet = 'a'
-        for (let i = 1; i < this.numberOfAgents + 1; i++) {
-            let group3AgentName = this.group2Name + currLet;
+
+        for (let i = 1; i < this.numberOfGroup3Agents + 1; i++) {
+            let group3AgentName = this.group3Name + currLet;
 
             this.group3Agents.set(group3AgentName, {
                 name: group3AgentName,
-                match: new Array(),
-                ranking: new Array()
+                lecturer: this.group2Agents[Math.random() * this.group2Agents.size],    // generates a lecturer for the project
+                capacity: Math.floor(Math.random() * (3 - 1 + 1) + 1),    // generate random capacity for each project. TO CHANGE.
+                assigned: new Array()
             });
 
-            this.freeAgentsOfGroup1.push(group3AgentName);
             currLet = String.fromCharCode((((currLet.charCodeAt(0) + 1) - 65 ) % 26) + 65);
         }
     }
@@ -121,46 +131,41 @@ export abstract class MatchingAlgorithmExtension {
     // changes agent.ranking
     generatePreferences(): void {
         
-        for (let agent of Array.from(this.group1Agents.values())) {
+        for (let student of Array.from(this.group1Agents.values())) {
             let agent1Rankings = Array.from((new Map(this.group3Agents)).values());
             this.shuffle(agent1Rankings);
-            this.group1Agents.get(agent.name).ranking = agent1Rankings;
+            this.group1Agents.get(student.name).ranking = agent1Rankings;
         }
 
-        for (let agent of Array.from(this.group2Agents.values())) {
-            let agent2Rankings = Array.from((new Map(this.group1Agents)).values());
+        for (let lecturer of Array.from(this.group2Agents.values())) {
+            let agent2Rankings = Array.from((new Map(this.group3Agents)).values());
             this.shuffle(agent2Rankings);
-            this.group2Agents.get(agent.name).ranking = agent2Rankings;
+            this.group2Agents.get(lecturer.name).ranking = agent2Rankings;
         }
 
     }
 
-    // Further Investigation needed
-
     populatePreferences(preferences: Map<String, Array<String>>): void {
-        // console.log(preferences);
-        let tempCopyList: Agent[];
+        let tempCopyList: Project[];
 
-        for (let agent of Array.from(this.group1Agents.keys())) {
+        for (let student of Array.from(this.group1Agents.keys())) {
             tempCopyList = [];
-            // this.group1Agents.get(agent).ranking = preferences.get(this.getLastCharacter(String(agent)));
-            for (let preferenceAgent of preferences.get(this.getLastCharacter(String(agent)))) {
+            for (let preferenceAgent of preferences.get(this.getLastCharacter(String(student)))) {
                 tempCopyList.push(this.group3Agents.get(this.group3Name + preferenceAgent));
             }
-            this.group1Agents.get(agent).ranking = tempCopyList;
+            this.group1Agents.get(student).ranking = tempCopyList;
         }
 
-        for (let agent of Array.from(this.group3Agents.keys())) {
+        for (let lecturer of Array.from(this.group3Agents.keys())) {
             tempCopyList = [];
-            // this.group1Agents.get(agent).ranking = preferences.get(this.getLastCharacter(String(agent)));
-            for (let preferenceAgent of preferences.get(this.getLastCharacter(String(agent)))) {
+            for (let preferenceAgent of preferences.get(this.getLastCharacter(String(lecturer)))) {
                 tempCopyList.push(this.group3Agents.get(this.group3Name + preferenceAgent));
             }
-            this.group2Agents.get(agent).ranking = tempCopyList;
+            this.group2Agents.get(lecturer).ranking = tempCopyList;
         }
     
-        console.log(this.group1Agents);
-        console.log(this.group2Agents); 
+        console.log(this.group1Agents); //TODO : potentially remove later after testing
+        console.log(this.group2Agents); //TODO : potentially remove later after testing
         console.log(this.group3Agents); //TODO : potentially remove later after testing
 
     }
@@ -180,7 +185,7 @@ export abstract class MatchingAlgorithmExtension {
     }
 
 
-    // TO DO might need changes 
+    // TO DO: NEEDS Changes
 
     getGroupRankings(agents: Map<String, Agent>): Map<String, Array<String>> {
 

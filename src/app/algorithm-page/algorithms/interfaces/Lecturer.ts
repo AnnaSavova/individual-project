@@ -1,6 +1,8 @@
-import { Agent } from "./Agent";
+import { Project } from "./Project";
 
-export interface Lecturer extends Agent {
+export interface Lecturer {
+    name: String;
+    ranking: Array<Project>;
     capacity: number;
     advising: number;
 }
