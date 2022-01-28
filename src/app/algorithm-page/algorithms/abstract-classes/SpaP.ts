@@ -1,5 +1,8 @@
 import { Agent } from "../interfaces/Agent";
 import { AlgorithmData } from "../interfaces/AlgorithmData";
+import { Lecturer } from "../interfaces/Lecturer";
+import { Project } from "../interfaces/Project";
+import { Student } from "../interfaces/Student";
 import { MatchingAlgorithmExtension } from "./MatchingAlgorithmExtension";
 
 export abstract class SpaP extends MatchingAlgorithmExtension {
@@ -15,33 +18,34 @@ export abstract class SpaP extends MatchingAlgorithmExtension {
             this.relevantPreferences = [];
 
             // while (some student si is unassigned) and (si's preference list is non-empty) {
-            let currentAgent = this.group1Agents.get(this.freeAgentsOfGroup1[0]);   // current student si
-            this.currentlySelectedAgents.push(this.getLastCharacter(currentAgent.name));
-            this.relevantPreferences.push(this.getLastCharacter(currentAgent.name));
+            let si = this.group1Agents.get(this.freeAgentsOfGroup1[0]);   // current student si
+            this.currentlySelectedAgents.push(this.getLastCharacter(si.name));
+            this.relevantPreferences.push(this.getLastCharacter(si.name));
 
-            let currentProject = currentAgent.ranking[0];
-            let currentLecturer;
+            let pj = si.ranking[0];     // first project on si's list
+            let lk = pj.lecturer;       // lecturer who offers pj
+            let pz = lk.ranking[-1];    // worst project on lk's list
 
 
             // if all potential proposees are gone, remove 
-            if (currentAgent.ranking.length <= 0 || !this.getNextPotentialProposee(currentAgent)) {
+            if (si.ranking.length <= 0 || !this.getNextPotentialProposee(si)) {
                 this.freeAgentsOfGroup1.shift();
             } else {
 
-                this.update(2, {"%currentAgent%": currentAgent.name});
+                this.update(2, {"%currentAgent%": si.name});
 
-                // r := first such resident on h's list;
-                let potentialProposee: Agent = this.getNextPotentialProposee(currentAgent);
+                // first such project on si's list;
+                let potentialProposee: Project = this.getNextPotentialProposee(si);
 
 
-                let agentLastChar = this.getLastCharacter(currentAgent.name);
+                let agentLastChar = this.getLastCharacter(si.name);
                 let proposeeLastChar = this.getLastCharacter(potentialProposee.name);
 
                 this.currentlySelectedAgents.push(proposeeLastChar);
                 this.relevantPreferences.push(proposeeLastChar);
 
                 this.changePreferenceStyle(this.group1CurrentPreferences, agentLastChar, this.originalGroup1CurrentPreferences.get(agentLastChar).findIndex(woman => woman == this.getLastCharacter(potentialProposee.name)), "red");
-                this.changePreferenceStyle(this.group2CurrentPreferences, proposeeLastChar, this.findPositionInMatches(potentialProposee, currentAgent), "red");
+                this.changePreferenceStyle(this.group2CurrentPreferences, proposeeLastChar, this.findPositionInMatches(si, potentialProposee), "red");
 
                 let redLine = [agentLastChar, proposeeLastChar, "red"];
                 this.currentLines.push(redLine);
@@ -70,13 +74,18 @@ export abstract class SpaP extends MatchingAlgorithmExtension {
     }
 
 
-    abstract getNextPotentialProposee(currentAgent: Agent): Agent;
+    abstract getNextPotentialProposee(currentAgent: Student): Project;
 
     abstract shouldContinueMatching(currentAgent: Agent): boolean;
 
-    abstract provisionallyAssign(currentAgent: Agent, potentialProposee: Agent): void;
+    abstract provisionallyAssign(currentAgent: Student, potentialProposee: Project): void;
 
-    abstract removeRuledOutPreferences(currentAgent: Agent, potentialProposee: Agent): void;
+    // removeRuledOutPreferences group:
+    
+    abstract removeRuledOutPreferencesFromStudent(currentAgent: Student, potentialProposee: Project): void;
+
+    abstract removeRuledOutPreferencesFromLecturer(currentAgent: Lecturer, potentialProposee: Project): void;
+    // end of group
 
     abstract breakAssignment(currentAgent: Agent, potentialProposee: Agent): void;
 

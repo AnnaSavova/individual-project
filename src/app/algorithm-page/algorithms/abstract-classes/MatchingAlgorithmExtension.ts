@@ -99,7 +99,7 @@ export abstract class MatchingAlgorithmExtension {
 
             this.group2Agents.set(group2AgentName, {
                 name: group2AgentName,
-                //match: new Array(),
+                match: new Array(),
                 ranking: new Array(),
                 capacity: Math.floor(Math.random() * (3 - 1 + 1) + 1),    // generate random capacity for each lecturer. TO CHANGE.
                 advising: 0
@@ -118,7 +118,7 @@ export abstract class MatchingAlgorithmExtension {
             this.group3Agents.set(group3AgentName, {
                 name: group3AgentName,
                 lecturer: this.group2Agents[Math.random() * this.group2Agents.size],    // generates a lecturer for the project
-                capacity: Math.floor(Math.random() * (3 - 1 + 1) + 1),    // generate random capacity for each project. TO CHANGE.
+                capacity: 1,
                 assigned: new Array()
             });
 
@@ -184,29 +184,21 @@ export abstract class MatchingAlgorithmExtension {
         }
     }
 
+    getRankings(agents: Map<String, (Student | Lecturer)>): Map<String, Array<String>>{
+        let rankList : Map<String, Array<String>> = new Map()
 
-    // TO DO: NEEDS Changes
+        for (let agent of Array.from(agents.values())){
+            let preferences = [];
 
-    getGroupRankings(agents: Map<String, Agent>): Map<String, Array<String>> {
-
-        let matches: Map<String, Array<String>> = new Map();
-
-        for (let agent of Array.from(agents.values())) {
-            let preferenceList = [];
-            
-            for (let match of agent.ranking) {
-                preferenceList.push(match.name.slice(match.name.length - 1));
+            for (let mapping of agent.ranking){
+                preferences.push(mapping.name.slice(mapping.name.length - 1));
             }
 
-            let identifier: string = agent.name.slice(agent.name.length - 1);
-            // console.log()
+            let agentName: string = agent.name.slice(agent.name.length - 1);
 
-            matches.set(identifier, preferenceList);
-
+            rankList.set(agentName, preferences);
         }
-
-        return matches;
-
+        return rankList;
     }
 
 
@@ -218,7 +210,6 @@ export abstract class MatchingAlgorithmExtension {
           //products.slice(0) clone array
           mapCloned.set(key, str.slice(0));
         });
-    
         return mapCloned;
     }
 
@@ -238,44 +229,45 @@ export abstract class MatchingAlgorithmExtension {
         }
 
         this.algorithmData.commands.push(currentStep);
-
     }
-
-
-    // TODO might need to change
 
     getMatches(): Map<String, Array<String>> {
         let matches: Map<String, Array<String>> = new Map();
 
-        for (let i = 1; i < this.numberOfGroup2Agents + 1; i++) {
-            let agentName: string = this.group2Name + String.fromCharCode(i + 64);
-            let agent: Agent = this.group2Agents.get(agentName);
+        for (let i = 1; i < this.numberOfAgents + 1; i++) {
+            let agentName: string = this.group1Name + String.fromCharCode(i + 64);
+            let student: Student = this.group1Agents.get(agentName);
 
             let matchList: Array<String> = new Array();
 
-            for (let match of agent.match) {
+            for (let match of student.match) {
                 matchList.push(match.name);
             }
-
-            matches.set(agent.name, matchList);
-
+            matches.set(student.name, matchList);
         }
-
         return matches;
-
     }
 
-
-    findPositionInMatches(currentAgent: Agent, agentToFind: Agent): number {
-        let position: number = currentAgent.ranking.findIndex((agent: { name: string; }) => agent.name == agentToFind.name);
+    findPositionInMatches(currentAgent: Student | Lecturer, agentToFind: Project): number {
+        let position: number = currentAgent.ranking.findIndex((person: { name: string; }) => person.name == agentToFind.name);
         return position;
     }
+    
+    /** findPositionInOriginalMatches group: */ 
 
-    findPositionInOriginalMatches(currentAgent: Agent, agentToFind: Agent) {
+    findPositionInOriginalStudentMatches(currentAgent: Student, agentToFind: Project) {
         let originalPreferences = this.originalGroup1CurrentPreferences.get(currentAgent.name[currentAgent.name.length - 1]);
         let position: number = originalPreferences.indexOf(agentToFind.name[agentToFind.name.length - 1]);
         return position;
     }
+
+    findPositionInOriginalLecturerMatches(currentAgent: Lecturer, agentToFind: Project) {
+        let originalPreferences = this.originalGroup2CurrentPreferences.get(currentAgent.name[currentAgent.name.length - 1]);
+        let position: number = originalPreferences.indexOf(agentToFind.name[agentToFind.name.length - 1]);
+        return position;
+    }
+    /** end of group */
+
 
     getLastCharacter(name: string) {
         return name.slice(name.length - 1);
@@ -303,7 +295,6 @@ export abstract class MatchingAlgorithmExtension {
 
     // #53D26F (green)
     // #C4C4C4 (grey)
-    // changePreferenceStyle(preferenceList: Object, person: string, position: number, style: string) {
     changePreferenceStyle(preferenceList: Map<String, Array<String>>, person: string, position: number, style: string) {
 
         let currentAgent: string = "";
@@ -329,46 +320,12 @@ export abstract class MatchingAlgorithmExtension {
     }
 
 
-    // TODO : edit with Dr Sofiat's papers
-    
-    // check if no unmatched pair like each other more than their current partners
-    checkStability(allMatches: Map<String, Array<String>>): boolean {
-        let stability = true;
+    /** getLastMatch group: */
 
-        // for all women
-        for (let agent of allMatches.keys()) {
-            let agentMatches = allMatches.get(agent);
-
-            // if agent has matches
-            if (agentMatches.length > 0) {
-
-                // find the position of the last ranked match (for Stable Marriage this will be the only match)
-                let lastAgentPosition = this.getLastMatch(agent, agentMatches);
-                let agentPreferences: Array<Agent> = this.group2Agents.get(agent).ranking;
-
-                // for every agent, x, better than match, check:
-                //   - if x isn't one of the matches (for HR), then
-                //      - check if x likes currentAgent more than their match
-                //          - if yes, stability = false
-                //          - if no, stability = true
-                for (let i = lastAgentPosition - 1; i >= 0; i--) {
-                    if (!agentMatches.includes(agentPreferences[i].name)) {
-                        let matchPosition = this.findPositionInOriginalMatches(agentPreferences[i], agentPreferences[i].match[0]);
-                        let currentAgentPosition = this.findPositionInOriginalMatches(agentPreferences[i], this.group2Agents.get(agent));
-                        if (currentAgentPosition < matchPosition) {
-                            stability = false;
-                        }
-                    }
-                }
-            }
-        }
-        return stability;
-    }
-
-    getLastMatch(currentAgent: String, agentMatches: Array<String>): number {
+    getLastStudentMatch(currentAgent: String, agentMatches: Array<String>): number {
         let furthestIndex: number = 0;
         for (let matchAgent of agentMatches) {
-            let matchPosition = this.findPositionInMatches(this.group2Agents.get(currentAgent), this.group1Agents.get(matchAgent));
+            let matchPosition = this.findPositionInMatches(this.group1Agents.get(currentAgent), this.group3Agents.get(matchAgent));
             if (matchPosition > furthestIndex) {
                 furthestIndex = matchPosition;
             }
@@ -376,8 +333,17 @@ export abstract class MatchingAlgorithmExtension {
         return furthestIndex;
     }
 
-
-    abstract match(): AlgorithmData;
+    getLastLecturerMatch(currentAgent: String, agentMatches: Array<String>): number {
+        let furthestIndex: number = 0;
+        for (let matchAgent of agentMatches) {
+            let matchPosition = this.findPositionInMatches(this.group2Agents.get(currentAgent), this.group3Agents.get(matchAgent));
+            if (matchPosition > furthestIndex) {
+                furthestIndex = matchPosition;
+            }
+        }
+        return furthestIndex;
+    }
+    /** end of group */
 
     run(numberOfAgents: number, numberOfGroup2Agents: number = numberOfAgents, numberOfGroup3Agents: number, preferences1: Map<String, Array<String>>, preferences2: Map<String, Array<String>>): AlgorithmData {
         if (numberOfGroup2Agents != numberOfAgents || numberOfGroup3Agents != numberOfAgents) {
@@ -400,11 +366,11 @@ export abstract class MatchingAlgorithmExtension {
             this.generatePreferences();
         }
 
-        this.group1CurrentPreferences = this.getGroupRankings(this.group1Agents);
-        this.originalGroup1CurrentPreferences = this.getGroupRankings(this.group1Agents);
+        this.group1CurrentPreferences = this.getRankings(this.group1Agents);
+        this.originalGroup1CurrentPreferences = this.getRankings(this.group1Agents);
 
-        this.group2CurrentPreferences = this.getGroupRankings(this.group2Agents);
-        this.originalGroup2CurrentPreferences = this.getGroupRankings(this.group2Agents);
+        this.group2CurrentPreferences = this.getRankings(this.group2Agents);
+        this.originalGroup2CurrentPreferences = this.getRankings(this.group2Agents);
 
         this.match();
 
@@ -418,5 +384,10 @@ export abstract class MatchingAlgorithmExtension {
         return this.algorithmData;
 
     }
+
+    abstract match(): AlgorithmData;
+
+    // check if no unmatched pair like each other more than their current partners
+    abstract checkStability(allMatches: Map<String, Array<String>>): boolean;
 
 }
