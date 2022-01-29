@@ -1,4 +1,3 @@
-import { Agent } from "../interfaces/Agent";
 import { AlgorithmData } from "../interfaces/AlgorithmData";
 import { Lecturer } from "../interfaces/Lecturer";
 import { Project } from "../interfaces/Project";
@@ -35,31 +34,32 @@ export abstract class SpaP extends MatchingAlgorithmExtension {
                 this.update(2, {"%currentAgent%": si.name});
 
                 // first such project on si's list;
-                let potentialProposee: Project = this.getNextPotentialProposee(si);
+                let preferredProject: Project = this.getNextPotentialProposee(si);
 
 
                 let agentLastChar = this.getLastCharacter(si.name);
-                let proposeeLastChar = this.getLastCharacter(potentialProposee.name);
+                let proposeeLastChar = this.getLastCharacter(preferredProject.name);
+                let lecturerLastChar = this.getLastCharacter(preferredProject.lecturer.name)
 
                 this.currentlySelectedAgents.push(proposeeLastChar);
                 this.relevantPreferences.push(proposeeLastChar);
 
-                this.changePreferenceStyle(this.group1CurrentPreferences, agentLastChar, this.originalGroup1CurrentPreferences.get(agentLastChar).findIndex(woman => woman == this.getLastCharacter(potentialProposee.name)), "red");
-                this.changePreferenceStyle(this.group2CurrentPreferences, proposeeLastChar, this.findPositionInMatches(si, potentialProposee), "red");
+                this.changePreferenceStyle(this.group1CurrentPreferences, agentLastChar, this.originalGroup1CurrentPreferences.get(agentLastChar).findIndex(project => project == this.getLastCharacter(preferredProject.name)), "red");
+                //this.changePreferenceStyle(this.group2CurrentPreferences, proposeeLastChar, this.findPositionInMatches(si, preferredProject), "red");
 
                 let redLine = [agentLastChar, proposeeLastChar, "red"];
                 this.currentLines.push(redLine);
 
-                this.update(3, {"%currentAgent%": currentAgent.name, "%potentialProposee%": potentialProposee.name});
+                this.update(3, {"%currentAgent%": si.name, "%preferredProject%": preferredProject.name});
 
                 // if h is fully subscribed, then break the assignment of the worst resident of that hospital
-                this.breakAssignment(currentAgent, potentialProposee);
+                this.breakAssignment(si, preferredProject);
         
-                this.provisionallyAssign(currentAgent, potentialProposee);
+                this.provisionallyAssign(si, preferredProject);
         
-                this.removeRuledOutPreferences(currentAgent, potentialProposee);
+                //this.removeRuledOutPreferences(si, preferredProject);
         
-                if (this.shouldContinueMatching(currentAgent)) {
+                if (this.shouldContinueMatching(si)) {
                     this.freeAgentsOfGroup1.shift();
                 }  
             }
@@ -76,17 +76,17 @@ export abstract class SpaP extends MatchingAlgorithmExtension {
 
     abstract getNextPotentialProposee(currentAgent: Student): Project;
 
-    abstract shouldContinueMatching(currentAgent: Agent): boolean;
+    abstract shouldContinueMatching(currentAgent: Student): boolean;
 
-    abstract provisionallyAssign(currentAgent: Student, potentialProposee: Project): void;
+    abstract provisionallyAssign(currentAgent: Student, preferredProject: Project): void;
 
-    // removeRuledOutPreferences group:
+    /** removeRuledOutPreferences group: */ 
     
-    abstract removeRuledOutPreferencesFromStudent(currentAgent: Student, potentialProposee: Project): void;
+    abstract removeRuledOutPreferencesFromStudent(currentAgent: Student, preferredProject: Project): void;
 
-    abstract removeRuledOutPreferencesFromLecturer(currentAgent: Lecturer, potentialProposee: Project): void;
-    // end of group
+    abstract removeRuledOutPreferencesFromLecturer(currentAgent: Lecturer, preferredProject: Project): void;
+    /** end of group */ 
 
-    abstract breakAssignment(currentAgent: Agent, potentialProposee: Agent): void;
+    abstract breakAssignment(currentAgent: Student | Lecturer, preferredProject: Project): void;
 
 }

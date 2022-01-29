@@ -1,5 +1,4 @@
 import { Injectable } from '@angular/core';
-import { ExtendedGaleShapley } from '../../abstract-classes/ExtendedGaleShapley';
 import { MatchingAlgorithmExtension } from '../../abstract-classes/MatchingAlgorithmExtension';
 import { Agent } from '../../interfaces/Agent';
 import { AlgorithmData } from '../../interfaces/AlgorithmData';
@@ -10,6 +9,16 @@ import { AlgorithmData } from '../../interfaces/AlgorithmData';
     providedIn: 'root'
   })
   export class SpapImprovedEgsService extends MatchingAlgorithmExtension {
+    group1Name = "student";
+    group2Name = "project";
+    group3Name = "lecturer";
+
+    lecturerCapacity : Map<string, number> = new Map();
+    projectCapacity: Map<string, number> = new Map();
+    
+    checkStability(allMatches: Map<String, String[]>): boolean {
+        throw new Error('Method not implemented.');
+    }
     match(): AlgorithmData {
         throw new Error('Method not implemented.');
     }
@@ -28,8 +37,4 @@ import { AlgorithmData } from '../../interfaces/AlgorithmData';
     breakAssignment(currentAgent: Agent, potentialProposee: Agent): void {
         throw new Error('Method not implemented.');
     }
-  
-    group1Name = "student";
-    group2Name = "project";
-    group3Name = "lecturer"
-    }
+}

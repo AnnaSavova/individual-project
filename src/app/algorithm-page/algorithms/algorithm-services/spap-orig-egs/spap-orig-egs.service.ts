@@ -1,6 +1,4 @@
-import { parseLazyRoute } from '@angular/compiler/src/aot/lazy_routes';
 import { Injectable } from '@angular/core';
-import { MatchingAlgorithmExtension } from '../../abstract-classes/MatchingAlgorithmExtension';
 import { SpaP } from '../../abstract-classes/SpaP';
 import { Agent } from '../../interfaces/Agent';
 import { AlgorithmData } from '../../interfaces/AlgorithmData';
@@ -39,7 +37,7 @@ import { Student } from '../../interfaces/Student';
     getNextPotentialProposee(project: Student): Project {
         throw new Error('Method not implemented.');
     }
-    shouldContinueMatching(currentAgent: Agent): boolean {
+    shouldContinueMatching(currentAgent: Student): boolean {
         throw new Error('Method not implemented.');
     }
     provisionallyAssign(currentAgent: Student, potentialProposee: Project): void {
@@ -60,7 +58,7 @@ import { Student } from '../../interfaces/Student';
     removeRuledOutPreferences(currentAgent: Agent, potentialProposee: Agent): void {
         throw new Error('Method not implemented.');
     }
-    breakAssignment(currentAgent: Agent, potentialProposee: Agent): void {
+    breakAssignment(person: Student | Lecturer, potentialProposee: Project): void {
         throw new Error('Method not implemented.');
     }
 }

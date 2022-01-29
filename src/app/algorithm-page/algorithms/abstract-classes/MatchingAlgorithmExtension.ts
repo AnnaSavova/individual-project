@@ -1,4 +1,3 @@
-import { Agent } from "../interfaces/Agent";
 import { AlgorithmData } from "../interfaces/AlgorithmData";
 import { Lecturer } from "../interfaces/Lecturer";
 import { Project } from "../interfaces/Project";
@@ -295,14 +294,14 @@ export abstract class MatchingAlgorithmExtension {
 
     // #53D26F (green)
     // #C4C4C4 (grey)
-    changePreferenceStyle(preferenceList: Map<String, Array<String>>, person: string, position: number, style: string) {
+    changePreferenceStyle(preferenceList: Map<String, Array<String>>, project: string, position: number, style: string) {
 
         let currentAgent: string = "";
 
-        if (preferenceList.get(person)[position].includes("#")) {
-        currentAgent = preferenceList.get(person)[position].charAt(preferenceList.get(person)[position].length - 2);
+        if (preferenceList.get(project)[position].includes("#")) {
+        currentAgent = preferenceList.get(project)[position].charAt(preferenceList.get(project)[position].length - 2);
         } else {
-        currentAgent = preferenceList.get(person)[position].charAt(preferenceList.get(person)[position].length - 1);
+        currentAgent = preferenceList.get(project)[position].charAt(preferenceList.get(project)[position].length - 1);
         }
 
         if (style == "green") {
@@ -315,7 +314,7 @@ export abstract class MatchingAlgorithmExtension {
         style = "#000000";
         }
 
-        preferenceList.get(person)[position] = "{" + style + currentAgent + "}";
+        preferenceList.get(project)[position] = "{" + style + currentAgent + "}";
 
     }
 

@@ -2,7 +2,7 @@ import { TestBed } from '@angular/core/testing';
 
 import { SpapImprovedEgsService } from './spap-improved-egs.service';
 
-describe('HrResidentEgsService', () => {
+describe('SpapImprovedEgsService', () => {
   let service: SpapImprovedEgsService;
 
   beforeEach(() => {
@@ -20,7 +20,7 @@ describe('HrResidentEgsService', () => {
       let agent1Count: number = Math.floor(Math.random() * (9 - 2) + 2);
       let agent2Count: number = Math.floor(Math.random() * (9 - 2) + 2);
       let agent3Count: number = Math.floor(Math.random() * (9 - 2) + 2);
-      service.run(agent1Count, agent2Count, undefined);  // TODO once MatchingAlgorithm.ts is edited
+      service.run(agent1Count, agent2Count, agent3Count, undefined, undefined); 
       if (!service.stable) {
         stable = false;
       }
