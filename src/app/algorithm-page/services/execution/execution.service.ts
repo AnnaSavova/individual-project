@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
 import { AlgorithmRetrievalService } from 'src/app/algorithm-retrieval.service';
 import { MatchingAlgorithm } from '../../algorithms/abstract-classes/MatchingAlgorithm';
+import { MatchingAlgorithmExtension } from '../../algorithms/abstract-classes/MatchingAlgorithmExtension';
 import { AlgorithmData } from '../../algorithms/interfaces/AlgorithmData';
 
 @Injectable({
@@ -21,13 +22,20 @@ export class ExecutionService {
     this.commandList = {};
   }
 
-  getExecutionFlow(algorithm: string, numberOfAgents: number, numberOfGroup2Agents: number = numberOfAgents, preferences: Map<String, Array<String>>): Object {
+  getExecutionFlow(algorithm: string, numberOfAgents: number, numberOfGroup2Agents: number = numberOfAgents, preferences: Map<String, Array<String>>, numberOfGroup3Agents?: number): Object {
     this.initialise();
-    let algorithmService: MatchingAlgorithm = this.algorithmRetrieval.mapOfAvailableAlgorithms.get(algorithm).service;
+    let algorithmService: (MatchingAlgorithm | MatchingAlgorithmExtension) = this.algorithmRetrieval.mapOfAvailableAlgorithms.get(algorithm).service;
     this.commandMap = this.algorithmRetrieval.mapOfAvailableAlgorithms.get(algorithm).helpTextMap;
     // console.log(this.commandMap);
 
-    let commandList: AlgorithmData = algorithmService.run(numberOfAgents, numberOfGroup2Agents, preferences);
+    let commandList: AlgorithmData;
+    if (algorithmService instanceof MatchingAlgorithm) {
+      let commandList: AlgorithmData = algorithmService.run(numberOfAgents, numberOfGroup2Agents, preferences);
+    } else if (algorithmService instanceof MatchingAlgorithmExtension){
+      let commandList: AlgorithmData = algorithmService.run(numberOfAgents, numberOfGroup2Agents, preferences, numberOfGroup3Agents);
+    } else{
+      throw new Error("algorithmService must be instance of MatchingAlgorithm or MatchingAlgorithmExtension");
+    }
 
     commandList.descriptions = this.generateDescriptions(commandList);
 

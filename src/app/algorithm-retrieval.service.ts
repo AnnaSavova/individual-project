@@ -35,6 +35,7 @@ export class AlgorithmRetrievalService {
 
   numberOfGroup1Agents: number = 5;
   numberOfGroup2Agents: number = 5;
+  numberOfGroup3Agents: number = 5;
 
   mapOfAvailableAlgorithms: Map<String, Algorithm> = new Map([
     [
