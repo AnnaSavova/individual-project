@@ -344,7 +344,7 @@ export abstract class MatchingAlgorithmExtension {
     }
     /** end of group */
 
-    run(numberOfAgents: number, numberOfGroup2Agents: number = numberOfAgents, numberOfGroup3Agents: number, preferences1: Map<String, Array<String>>, preferences2: Map<String, Array<String>>): AlgorithmData {
+    run(numberOfAgents: number, numberOfGroup2Agents: number = numberOfAgents, preferences: Map<String, Array<String>>, numberOfGroup3Agents: number): AlgorithmData {
         if (numberOfGroup2Agents != numberOfAgents || numberOfGroup3Agents != numberOfAgents) {
             this.initialise(numberOfAgents, numberOfGroup2Agents, numberOfGroup3Agents);
         } else {
@@ -353,17 +353,17 @@ export abstract class MatchingAlgorithmExtension {
         
         this.generateAgents();
 
-        if (preferences1) {
-            this.populatePreferences(preferences1);
+        if (preferences) {
+            this.populatePreferences(preferences);
         } else {
             this.generatePreferences();
         }
 
-        if (preferences2) {
-            this.populatePreferences(preferences2);
-        } else {
-            this.generatePreferences();
-        }
+        //if (preferences2) {
+        //    this.populatePreferences(preferences2);
+        //} else {
+        //    this.generatePreferences();
+        //}
 
         this.group1CurrentPreferences = this.getRankings(this.group1Agents);
         this.originalGroup1CurrentPreferences = this.getRankings(this.group1Agents);

@@ -50,7 +50,7 @@ export abstract class SpaP extends MatchingAlgorithmExtension {
                 let redLine = [agentLastChar, proposeeLastChar, "red"];
                 this.currentLines.push(redLine);
 
-                this.update(3, {"%currentAgent%": si.name, "%preferredProject%": preferredProject.name});
+                this.update(3, {"%preferredProject%": preferredProject.name, "%currentAgent%": si.name});
 
                 // if h is fully subscribed, then break the assignment of the worst resident of that hospital
                 this.breakAssignment(si, preferredProject);
