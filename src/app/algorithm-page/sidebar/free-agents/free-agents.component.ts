@@ -11,7 +11,10 @@ export class FreeAgentsComponent implements OnInit {
 
   constructor(
     public playback: PlaybackService,  // injecting the playback service
-    public algorithmService: AlgorithmRetrievalService) {}  // injecting the algorithm service) { }
+    public algorithmService: AlgorithmRetrievalService) {
+      console.log("playback: ", playback);
+      console.log("this.playback.stepCounter: ", this.playback.stepCounter);
+    }  // injecting the algorithm service) { }
 
   ngOnInit(): void {
   }

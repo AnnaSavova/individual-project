@@ -29,6 +29,7 @@ export class PlaybackService {
     this.algorithmData = {};
     this.commandList = [];
     this.currentCommand = {};
+    this.stepCounter = 0; // Unclear where initialised originally
   }
 
   resetPlaybackData(): void {
@@ -41,7 +42,8 @@ export class PlaybackService {
     this.description = "Click play to run the program below!";
   }
 
-  setAlgorithm(algorithm: string, numberOfAgents: number, numberOfGroup2Agents: number = numberOfAgents, preferences: Map<String, Array<String>> = null, numberOfGroup3Agents?): void {
+  setAlgorithm(algorithm: string, numberOfAgents: number, numberOfGroup2Agents: number = numberOfAgents,
+                preferences: Map<String, Array<String>> = null, numberOfGroup3Agents?: number): void {
 
     this.initialise();
 

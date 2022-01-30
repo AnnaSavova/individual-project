@@ -229,12 +229,18 @@ export class AlgorithmPageComponent implements OnInit {
 
     // animates changing of preferences (fade in/out)
     this.animation.fadeCanvasOut();
+
     await this.utils.delay(300);
     for (let i = 0; i < 100; i++) {
       // let agent1Count: number = Math.floor(Math.random() * (9 - 2) + 2);
       // let agent2Count: number = Math.floor(Math.random() * (9 - 2) + 2);
       // this.playback.setAlgorithm(this.algorithmService.currentAlgorithm.id, agent1Count, agent2Count);
-      this.playback.setAlgorithm(this.algorithmService.currentAlgorithm.id, this.algorithmService.numberOfGroup1Agents, this.algorithmService.numberOfGroup2Agents);
+      this.playback.setAlgorithm(
+        this.algorithmService.currentAlgorithm.id,
+        this.algorithmService.numberOfGroup1Agents,
+        this.algorithmService.numberOfGroup2Agents,
+        null,
+        this.algorithmService.numberOfGroup3Agents);
     }
     this.animation.fadeCanvasIn();
   }
