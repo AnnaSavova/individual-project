@@ -34,14 +34,24 @@ import { Student } from '../../interfaces/Student';
         return pz
     }
 
-    getNextPotentialProposee(project: Student): Project {
-        throw new Error('Method not implemented.');
+    getNextPotentialProposee(student: Student): Project {
+        // return first project on si's list
+      return student.ranking[0];
     }
-    shouldContinueMatching(currentAgent: Student): boolean {
-        throw new Error('Method not implemented.');
+
+    shouldContinueMatching(student: Student): boolean {
+        return true;
     }
-    provisionallyAssign(currentAgent: Student, potentialProposee: Project): void {
-        throw new Error('Method not implemented.');
+    provisionallyAssign(student: Student, project: Project): void {
+    // provisionally assign si to pj and lk;
+
+      let agentLastChar = this.getLastCharacter(student.name);
+      let proposeeLastChar = this.getLastCharacter(project.name);
+      let lecturerLastChar = this.getLastCharacter(project.lecturer.name);
+
+      this.removeArrayFromArray(this.currentLines, [agentLastChar, proposeeLastChar, "red"]);
+      this.removeArrayFromArray(this.currentLines, [agentLastChar, lecturerLastChar, "red"]);
+
     }
     removeRuledOutPreferencesFromStudent(currentAgent: Student, potentialProposee: Project): void {
         throw new Error('Method not implemented.');
