@@ -41,10 +41,16 @@ export class PlaybackService {
     this.description = "Click play to run the program below!";
   }
 
-  setAlgorithm(algorithm: string, numberOfAgents: number, numberOfGroup2Agents: number = numberOfAgents, preferences: Map<String, Array<String>> = null): void {
+  setAlgorithm(algorithm: string, numberOfAgents: number, numberOfGroup2Agents: number = numberOfAgents, preferences: Map<String, Array<String>> = null, numberOfGroup3Agents?): void {
 
     this.initialise();
-    this.algorithmData = this.exeService.getExecutionFlow(algorithm, numberOfAgents, numberOfGroup2Agents, preferences);
+
+    if (algorithm === "spap-orig-egs" || algorithm === "spap-improved-egs") {
+      this.algorithmData = this.exeService.getExecutionFlow(algorithm, numberOfAgents, numberOfGroup2Agents, preferences, numberOfGroup3Agents);
+    } else {
+      this.algorithmData = this.exeService.getExecutionFlow(algorithm, numberOfAgents, numberOfGroup2Agents, preferences);
+    }
+
     this.commandList = this.algorithmData["commands"];
     this.resetPlaybackData();
     this.numCommands = this.commandList.length-1;
