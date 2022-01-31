@@ -174,7 +174,7 @@ export class AlgorithmRetrievalService {
           6: "Check if %lecturer% is non-empty",
           7: "%lecturer% is non-empty, so %worstProject% is selected as %lecturer%'s worst non-empty project",
           8: "%currentAgent% applies to %preferredProject%",
-          9: "Check if %preferredProject% is fully subscribed or (%lecturer% is fully subscribed and %preferredProject% is %worstProject%)",
+          9: "Check if %preferredProject% is fully subscribed after assigning it to %student% or (%lecturer% is fully subscribed and %preferredProject% is %worstProject%)",
           10: "%preferredProject% is fully subscribed or (%lecturer% is fully subscribed and %preferredProject% is %worstProject%), so delete %preferredProject% from %currentAgent%'s list",
           11: "%preferredProject% is not fully subscribed and (%lecturer% is not fully subscribed or %preferredProject% is not %worstProject%), so provisionally assign %currentAgent% to %preferredProject% and %lecturer%",
           12: "Check if %lecturer% is over-subscribed",

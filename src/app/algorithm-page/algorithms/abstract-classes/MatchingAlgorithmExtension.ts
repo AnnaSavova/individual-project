@@ -101,7 +101,7 @@ export abstract class MatchingAlgorithmExtension {
                 match: new Array(),
                 ranking: new Array(),
                 capacity: Math.floor(Math.random() * (3 - 1 + 1) + 1),    // generate random capacity for each lecturer. TO CHANGE.
-                advising: 0
+                //advising: 0
             });
 
             currentLetter = String.fromCharCode((((currentLetter.charCodeAt(0) + 1) - 65 ) % 26) + 65);
@@ -294,28 +294,56 @@ export abstract class MatchingAlgorithmExtension {
 
     // #53D26F (green)
     // #C4C4C4 (grey)
-    changePreferenceStyle(preferenceList: Map<String, Array<String>>, project: string, position: number, style: string) {
+    changePreferenceStyle(preferenceList: Map<String, Array<String>>, person: string, position: number, style: string) {
 
         let currentAgent: string = "";
 
-        if (preferenceList.get(project)[position].includes("#")) {
-        currentAgent = preferenceList.get(project)[position].charAt(preferenceList.get(project)[position].length - 2);
+        if (preferenceList.get(person)[position].includes("#")) {
+            currentAgent = preferenceList.get(person)[position].charAt(preferenceList.get(person)[position].length - 2);
         } else {
-        currentAgent = preferenceList.get(project)[position].charAt(preferenceList.get(project)[position].length - 1);
+            currentAgent = preferenceList.get(person)[position].charAt(preferenceList.get(person)[position].length - 1);
         }
 
         if (style == "green") {
-        style = "#53D26F";
+            style = "#53D26F";
         } else if (style == "red") {
-        style = "#EB2A2A";
+            style = "#EB2A2A";
         } else if (style == "grey") {
-        style = "#C4C4C4";
+            style = "#C4C4C4";
         } else if (style == "black") {
-        style = "#000000";
+            style = "#000000";
         }
 
-        preferenceList.get(project)[position] = "{" + style + currentAgent + "}";
+        preferenceList.get(person)[position] = "{" + style + currentAgent + "}";
 
+    }
+
+    changeAgentStyle(person: string, style: string) {
+        let currentAgent: string = "";
+
+        //if (person[position].includes("#")) {
+        //    currentAgent = person[position].charAt(person[position].length - 2);
+        //} else {
+        //    currentAgent = person[position].charAt(person[position].length - 1);
+        //}
+
+        if (person.includes('#')){
+            currentAgent = person.charAt(person.length - 2);
+        } else {
+            currentAgent = person.charAt(person.length - 1);
+        }
+
+        if (style == "green") {
+            style = "#53D26F";
+        } else if (style == "red") {
+            style = "#EB2A2A";
+        } else if (style == "grey") {
+            style = "#C4C4C4";
+        } else if (style == "black") {
+            style = "#000000";
+        }
+
+        person = "{" + style + currentAgent + "}";
     }
 
 

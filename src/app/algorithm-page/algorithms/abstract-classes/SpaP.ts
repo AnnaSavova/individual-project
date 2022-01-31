@@ -21,10 +21,6 @@ export abstract class SpaP extends MatchingAlgorithmExtension {
             this.currentlySelectedAgents.push(this.getLastCharacter(si.name));
             this.relevantPreferences.push(this.getLastCharacter(si.name));
 
-            let pj = si.ranking[0];     // first project on si's list
-            let lk = pj.lecturer;       // lecturer who offers pj
-            let pz = lk.ranking[-1];    // worst project on lk's list
-
 
             // if all potential proposees are gone, remove 
             if (si.ranking.length <= 0 || !this.getNextPotentialProposee(si)) {
@@ -35,24 +31,26 @@ export abstract class SpaP extends MatchingAlgorithmExtension {
 
                 // first such project on si's list;
                 let preferredProject: Project = this.getNextPotentialProposee(si);
+                let lecturer: Lecturer = this.getProjectLecturer(preferredProject);
+
 
 
                 let agentLastChar = this.getLastCharacter(si.name);
                 let proposeeLastChar = this.getLastCharacter(preferredProject.name);
-                let lecturerLastChar = this.getLastCharacter(preferredProject.lecturer.name)
+                let lecturerLastChar = this.getLastCharacter(lecturer.name)
 
                 this.currentlySelectedAgents.push(proposeeLastChar);
                 this.relevantPreferences.push(proposeeLastChar);
 
                 this.changePreferenceStyle(this.group1CurrentPreferences, agentLastChar, this.originalGroup1CurrentPreferences.get(agentLastChar).findIndex(project => project == this.getLastCharacter(preferredProject.name)), "red");
-                //this.changePreferenceStyle(this.group2CurrentPreferences, proposeeLastChar, this.findPositionInMatches(si, preferredProject), "red");
+                this.changeAgentStyle(lecturerLastChar, "red")
 
-                let redLine = [agentLastChar, proposeeLastChar, "red"];
+                let redLine = [agentLastChar, proposeeLastChar, lecturerLastChar, "red"];
                 this.currentLines.push(redLine);
 
-                this.update(3, {"%preferredProject%": preferredProject.name, "%currentAgent%": si.name});
+                this.update(3, {"%currentAgent%": si.name, "%preferredProject%": preferredProject.name});
 
-                // if h is fully subscribed, then break the assignment of the worst resident of that hospital
+                // if lecturer is fully subscribed, then break the assignment
                 this.breakAssignment(si, preferredProject);
         
                 this.provisionallyAssign(si, preferredProject);
@@ -68,25 +66,27 @@ export abstract class SpaP extends MatchingAlgorithmExtension {
         this.currentlySelectedAgents = [];
         this.relevantPreferences = [];
         // a stable matching has been found
-        this.update(12);
+        this.update(12);        //TODO fix step number
 
         return;
     }
 
 
-    abstract getNextPotentialProposee(currentAgent: Student): Project;
+    abstract getNextPotentialProposee(student: Student): Project;
 
-    abstract shouldContinueMatching(currentAgent: Student): boolean;
+    abstract getProjectLecturer(project: Project): Lecturer;
 
-    abstract provisionallyAssign(currentAgent: Student, preferredProject: Project): void;
+    abstract shouldContinueMatching(student: Student): boolean;
+
+    abstract provisionallyAssign(student: Student, preferredProject: Project): void;
 
     /** removeRuledOutPreferences group: */ 
     
-    abstract removeRuledOutPreferencesFromStudent(currentAgent: Student, preferredProject: Project): void;
+    abstract removeRuledOutPreferencesFromStudent(student: Student, preferredProject: Project): void;
 
-    abstract removeRuledOutPreferencesFromLecturer(currentAgent: Lecturer, preferredProject: Project): void;
+    abstract removeRuledOutPreferencesFromLecturer(lecturer: Lecturer, preferredProject: Project): void;
     /** end of group */ 
 
-    abstract breakAssignment(currentAgent: Student | Lecturer, preferredProject: Project): void;
+    abstract breakAssignment(person: Student | Lecturer, preferredProject: Project): void;
 
 }
