@@ -15,27 +15,11 @@ import { Student } from '../../interfaces/Student';
     group2Name = "lecturer"
     group3Name = "project"
 
-    lecturerCapacity : Map<string, number> = new Map();
-    projectCapacity: Map<string, number> = new Map();
+    //lecturerCapacity : Map<string, number> = new Map();
+    //projectCapacity: Map<string, number> = new Map();
 
     getProjectLecturer(project: Project): Lecturer {
         return project.lecturer;
-    }
-
-    getLecturerWorstNonEmptyProject(lk : Lecturer): Project {
-        let positionMap: Map<number, Project> = new Map();
-
-        for (let project of lk.match){
-            positionMap.set(this.findPositionInMatches(lk, project), project);
-        }
-
-        let pz = positionMap.get(Math.max(...Array.from(positionMap.keys())));
-        
-        while (pz.assigned.length === 0) {
-            pz = positionMap.get(Math.max(...Array.from(positionMap.keys())));
-        }
-        
-        return pz
     }
 
     getNextPotentialProposee(student: Student): Project {
@@ -74,24 +58,30 @@ import { Student } from '../../interfaces/Student';
 
     }
 
-    removeRuledOutPreferencesFromStudent(student: Student, project: Project): void {
-        this.update(9, {"%student%": student.name, "%preferredProject": project.name});
-    }
-    
-    removeRuledOutPreferencesFromLecturer(currentAgent: Lecturer, potentialProposee: Project): void {
+    reject(student: Student, project: Project): void {
         throw new Error('Method not implemented.');
     }
+    
     checkStability(allMatches: Map<String, String[]>): boolean {
         throw new Error('Method not implemented.');
     }
-    match(): AlgorithmData {
-        throw new Error('Method not implemented.');
-    }
-    removeRuledOutPreferences(currentAgent: Agent, potentialProposee: Agent): void {
-        throw new Error('Method not implemented.');
-    }
+    
     breakAssignment(person: Student | Lecturer, potentialProposee: Project): void {
         throw new Error('Method not implemented.');
+    }
+
+    applyTo(si: Student, preferredProject: Project, lecturer: Lecturer): void {
+        let pz = lecturer.ranking[-1];
+        if (lecturer.match.length > 0){
+            pz = this.getLecturerWorstNonEmptyProject(lecturer);
+        }
+
+        if (this.fullAndNonEmpty){
+            // delete pj from si's list
+        } else {
+            // M U { (si, pj) }
+            this.provisionallyAssign(si, preferredProject);
+        }
     }
     
 }
