@@ -38,7 +38,7 @@ import { Student } from '../../interfaces/Student';
         return true;
     }
 
-    provisionallyAssign(student: Student, project: Project): void {
+    provisionallyAssign(student: Student, project: Project, worstProject: Project): void {
         throw new Error('Method not implemented.');
     }
     

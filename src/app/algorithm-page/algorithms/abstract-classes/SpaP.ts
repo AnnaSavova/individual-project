@@ -10,7 +10,7 @@ export abstract class SpaP extends MatchingAlgorithmExtension {
         let positionMap: Map<number, Project> = new Map();
 
         for (let project of lk.match){
-            positionMap.set(this.findPositionInMatches(lk, project), project);
+            positionMap.set(this.findPositionInLecturerMatches(lk, project), project);
         }
 
         let pz = positionMap.get(Math.max(...Array.from(positionMap.keys())));
@@ -22,11 +22,11 @@ export abstract class SpaP extends MatchingAlgorithmExtension {
         return pz
     }
     
-    fullAndNonEmpty(lecturer: Lecturer, preferredProject: Project): boolean{
+    fullAndNonEmpty(lecturer: Lecturer, preferredProject: Project, worstProject: Project): boolean{
         // if project is full
         if (preferredProject.assigned.length === preferredProject.capacity
             // or (if lecturer is full and preferredProject is lecturer's worst non empty project)
-            || (lecturer.match.length === lecturer.capacity && preferredProject === this.getLecturerWorstNonEmptyProject(lecturer))){
+            || (lecturer.match.length === lecturer.capacity && preferredProject === worstProject)){
                 return true;
             }
         return false;
@@ -75,18 +75,7 @@ export abstract class SpaP extends MatchingAlgorithmExtension {
                 this.update(3, {"%currentAgent%": si.name, "%preferredProject%": preferredProject.name});
 
                 // student applies to project
-                this.applyTo(si, preferredProject, lecturer);
-
-                // if lecturer is fully subscribed, then break the assignment
-                this.breakAssignment(si, preferredProject);
-        
-                this.provisionallyAssign(si, preferredProject);
-        
-                //this.removeRuledOutPreferences(si, preferredProject);
-        
-                if (this.shouldContinueMatching(si)) {
-                    this.freeAgentsOfGroup1.shift();
-                }  
+                this.applyTo(si, preferredProject, lecturer); 
             }
         }
 
@@ -106,7 +95,7 @@ export abstract class SpaP extends MatchingAlgorithmExtension {
 
     abstract shouldContinueMatching(student: Student): boolean;
 
-    abstract provisionallyAssign(student: Student, preferredProject: Project): void;
+    abstract provisionallyAssign(student: Student, preferredProject: Project, worstProject: Project): void;
 
     /** removeRuledOutPreferences group: */ 
     
@@ -114,9 +103,5 @@ export abstract class SpaP extends MatchingAlgorithmExtension {
 
     //abstract removeRuledOutPreferencesFromLecturer(lecturer: Lecturer, preferredProject: Project): void;
     /** end of group */ 
-
-    abstract reject(student: Student, project: Project): void;
-
-    abstract breakAssignment(person: Student | Lecturer, preferredProject: Project): void;
 
 }

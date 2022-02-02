@@ -31,57 +31,102 @@ import { Student } from '../../interfaces/Student';
         return true;
     }
 
-    provisionallyAssign(student: Student, project: Project): void {
-    // provisionally assign si to pj and lk;
-
-      let agentLastChar = this.getLastCharacter(student.name);
-      let proposeeLastChar = this.getLastCharacter(project.name);
-      let lecturerLastChar = this.getLastCharacter(project.lecturer.name);
-
-      this.removeArrayFromArray(this.currentLines, [agentLastChar, proposeeLastChar, lecturerLastChar, "red"]);
-
-      let greenLine = [agentLastChar, proposeeLastChar, lecturerLastChar, "green"];
-      this.currentLines.push(greenLine);
-
-      this.changePreferenceStyle(this.group1CurrentPreferences, agentLastChar, this.originalGroup1CurrentPreferences.get(agentLastChar).findIndex(p => p == this.getLastCharacter(project.name)), "green");
-      this.changeAgentStyle(lecturerLastChar, "green");
-
-      if (project.lecturer.match.length >= project.lecturer.capacity - 1) {
-        this.algorithmSpecificData["lecturerCapacity"][lecturerLastChar] = "{#53D26F" + this.algorithmSpecificData["lecturerCapacity"][lecturerLastChar] + "}";
-        this.algorithmSpecificData["projectCapacity"][proposeeLastChar] = "{#53D26F" + this.algorithmSpecificData["projectCapacity"][proposeeLastChar] + "}";
-      }
-
-      this.update(7, {"%si%": student.name, "%project%": project.name, "%lecturer%": project.lecturer.name}); //TODO: change step number
-      student.match[0] = project;
-      project.lecturer.match[0] = project;
-      project.assigned.push(student);
-
+    // from: https://stackoverflow.com/questions/70205185/get-random-element-of-dictionary-in-typescript
+    getRandomStudent(project: Project){
+        let sr = this.group1Agents[Math.floor(Math.random() * Object.keys(this.group1Agents).length)];
+        return sr;
     }
 
-    reject(student: Student, project: Project): void {
-        throw new Error('Method not implemented.');
+    reject(sr: Student, project: Project){
+        delete sr.ranking[project.name];
+        this.relevantPreferences.pop();
+    }
+
+    provisionallyAssign(student: Student, project: Project, worstProject: Project): void {
+        // provisionally assign si to pj and lk;
+        let lecturer = project.lecturer
+        
+        if (lecturer.match.length > lecturer.capacity){
+            let sr: Student = this.getRandomStudent(worstProject);
+            // M = M \ {(sr, pz)}
+            this.reject(sr, worstProject);
+        }
+    }
+
+    removeRuledOutPreference(lecturer: Lecturer): void {
+        // if lecturer is full
+        if (lecturer.match.length === lecturer.capacity){
+
+            let worstProject = this.getLecturerWorstNonEmptyProject(lecturer);
+            let worstProjectPosition = this.findPositionInLecturerMatches(lecturer, worstProject);
+            let rankingClearCounter: number = worstProjectPosition + 1;
+            
+            // for each successor pt of pz on lecturer's list:
+            for (let i = rankingClearCounter; i < lecturer.ranking.length; i++){
+                // for each student sr who finds pt acceptable:
+                for (let key of Object.keys(this.group1Agents)){
+                    // if the student find pt acceptable
+                    if (lecturer.ranking[i].name in this.group1Agents.get(key).ranking){
+                        // delete pt from sr's list
+
+                        //this.update();
+                        let sr = this.group1Agents.get(key);
+                        sr.ranking.splice(i, 1);
+                        i -= 1;
+                        rankingClearCounter++;
+                        this.relevantPreferences.pop();
+                    }
+                }
+            }
+        }
+    }
+
+    applyTo(si: Student, preferredProject: Project, lecturer: Lecturer): void {
+        let pz = lecturer.ranking[-1];
+        // if lecturer is non-empty
+        if (lecturer.match.length > 0){
+            pz = this.getLecturerWorstNonEmptyProject(lecturer);
+        }
+        if (this.fullAndNonEmpty(lecturer, preferredProject, pz)){
+            // delete pj from si's list
+            this.reject(si, preferredProject);
+
+        } else {
+            // M U { (si, pj) }
+            this.provisionallyAssign(si, preferredProject, pz);
+            this.removeRuledOutPreference(lecturer);
+        }
+        if (this.shouldContinueMatching(si)) {
+            this.freeAgentsOfGroup1.shift();
+        } 
     }
     
     checkStability(allMatches: Map<String, String[]>): boolean {
         throw new Error('Method not implemented.');
     }
-    
-    breakAssignment(person: Student | Lecturer, potentialProposee: Project): void {
-        throw new Error('Method not implemented.');
-    }
 
-    applyTo(si: Student, preferredProject: Project, lecturer: Lecturer): void {
-        let pz = lecturer.ranking[-1];
-        if (lecturer.match.length > 0){
-            pz = this.getLecturerWorstNonEmptyProject(lecturer);
-        }
+    // provisionally assign si to pj and lk;
 
-        if (this.fullAndNonEmpty){
-            // delete pj from si's list
-        } else {
-            // M U { (si, pj) }
-            this.provisionallyAssign(si, preferredProject);
-        }
-    }
+      //let agentLastChar = this.getLastCharacter(student.name);
+      //let proposeeLastChar = this.getLastCharacter(project.name);
+      //let lecturerLastChar = this.getLastCharacter(project.lecturer.name);
+
+      //this.removeArrayFromArray(this.currentLines, [agentLastChar, proposeeLastChar, lecturerLastChar, "red"]);
+
+      //let greenLine = [agentLastChar, proposeeLastChar, lecturerLastChar, "green"];
+      //this.currentLines.push(greenLine);
+
+      //this.changePreferenceStyle(this.group1CurrentPreferences, agentLastChar, this.originalGroup1CurrentPreferences.get(agentLastChar).findIndex(p => p == this.getLastCharacter(project.name)), "green");
+      //this.changeAgentStyle(lecturerLastChar, "green");
+
+      //if (project.lecturer.match.length >= project.lecturer.capacity - 1) {
+      //  this.algorithmSpecificData["lecturerCapacity"][lecturerLastChar] = "{#53D26F" + this.algorithmSpecificData["lecturerCapacity"][lecturerLastChar] + "}";
+      //  this.algorithmSpecificData["projectCapacity"][proposeeLastChar] = "{#53D26F" + this.algorithmSpecificData["projectCapacity"][proposeeLastChar] + "}";
+      //}
+
+      //this.update(7, {"%si%": student.name, "%project%": project.name, "%lecturer%": project.lecturer.name}); //TODO: change step number
+      //student.match[0] = project;
+      //project.lecturer.match[0] = project;
+      //project.assigned.push(student);
     
 }

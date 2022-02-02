@@ -247,11 +247,28 @@ export abstract class MatchingAlgorithmExtension {
         return matches;
     }
 
-    findPositionInMatches(currentAgent: Student | Lecturer, agentToFind: Project): number {
-        let position: number = currentAgent.ranking.findIndex((person: { name: string; }) => person.name == agentToFind.name);
+    /** findPositionInMatches group: */ 
+
+    findPositionInStudentMatches(currentAgent: Student, agentToFind: Project): number {
+        let position: number = -1;
+
+        for (let i = 0; i < agentToFind.assigned.length ; i++){
+            let studentName = agentToFind.assigned[i].name
+            if (currentAgent.name === studentName){
+                position = currentAgent.ranking.findIndex((person: { name: string; }) => person.name == studentName);
+                return position;
+            }
+        }
+        throw new Error("No such student found");
+    }
+
+    findPositionInLecturerMatches(currentAgent: Lecturer, agentToFind: Project): number {
+        let position = currentAgent.ranking.findIndex((person: { name: string; }) => person.name == agentToFind.lecturer.name);
         return position;
     }
+    /** end of group */
     
+
     /** findPositionInOriginalMatches group: */ 
 
     findPositionInOriginalStudentMatches(currentAgent: Student, agentToFind: Project) {
@@ -352,7 +369,7 @@ export abstract class MatchingAlgorithmExtension {
     getLastStudentMatch(currentAgent: String, agentMatches: Array<String>): number {
         let furthestIndex: number = 0;
         for (let matchAgent of agentMatches) {
-            let matchPosition = this.findPositionInMatches(this.group1Agents.get(currentAgent), this.group3Agents.get(matchAgent));
+            let matchPosition = this.findPositionInStudentMatches(this.group1Agents.get(currentAgent), this.group3Agents.get(matchAgent));
             if (matchPosition > furthestIndex) {
                 furthestIndex = matchPosition;
             }
@@ -363,7 +380,7 @@ export abstract class MatchingAlgorithmExtension {
     getLastLecturerMatch(currentAgent: String, agentMatches: Array<String>): number {
         let furthestIndex: number = 0;
         for (let matchAgent of agentMatches) {
-            let matchPosition = this.findPositionInMatches(this.group2Agents.get(currentAgent), this.group3Agents.get(matchAgent));
+            let matchPosition = this.findPositionInLecturerMatches(this.group2Agents.get(currentAgent), this.group3Agents.get(matchAgent));
             if (matchPosition > furthestIndex) {
                 furthestIndex = matchPosition;
             }
