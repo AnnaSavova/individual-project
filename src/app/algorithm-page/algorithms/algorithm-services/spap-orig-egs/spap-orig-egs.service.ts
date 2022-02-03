@@ -18,6 +18,13 @@ import { Student } from '../../interfaces/Student';
     //lecturerCapacity : Map<string, number> = new Map();
     //projectCapacity: Map<string, number> = new Map();
 
+    agentIsFree(si: Student): boolean {
+        if (si.ranking.length <= 0 || !this.getNextPotentialProposee(si)){
+            return true
+        }
+        return false;
+    }
+
     getProjectLecturer(project: Project): Lecturer {
         return project.lecturer;
     }
@@ -29,17 +36,6 @@ import { Student } from '../../interfaces/Student';
 
     shouldContinueMatching(student: Student): boolean {
         return true;
-    }
-
-    // from: https://stackoverflow.com/questions/70205185/get-random-element-of-dictionary-in-typescript
-    getRandomStudent(project: Project){
-        let sr = this.group1Agents[Math.floor(Math.random() * Object.keys(this.group1Agents).length)];
-        return sr;
-    }
-
-    reject(sr: Student, project: Project){
-        delete sr.ranking[project.name];
-        this.relevantPreferences.pop();
     }
 
     provisionallyAssign(student: Student, project: Project, worstProject: Project): void {
@@ -93,6 +89,7 @@ import { Student } from '../../interfaces/Student';
 
         } else {
             // M U { (si, pj) }
+            this.matchUp(si, preferredProject);
             this.provisionallyAssign(si, preferredProject, pz);
             this.removeRuledOutPreference(lecturer);
         }

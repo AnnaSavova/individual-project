@@ -6,6 +6,8 @@ import { MatchingAlgorithmExtension } from "./MatchingAlgorithmExtension";
 
 export abstract class SpaP extends MatchingAlgorithmExtension {
 
+    
+
     getLecturerWorstNonEmptyProject(lk : Lecturer): Project {
         let positionMap: Map<number, Project> = new Map();
 
@@ -32,6 +34,35 @@ export abstract class SpaP extends MatchingAlgorithmExtension {
         return false;
     }
 
+    getRandomStudent(project: Project){
+        let relevantStudents: Map<String, Student> = new Map();
+
+        for (let [key,value] of this.group1Agents){
+            if (value.match.includes(project)){
+                relevantStudents.set(key, value);
+            }
+        }
+
+        // from: https://stackoverflow.com/questions/70205185/get-random-element-of-dictionary-in-typescript
+        let sr = this.group1Agents[Math.floor(Math.random() * Object.keys(relevantStudents).length)];
+        return sr;
+    }
+
+    matchUp(student: Student, project: Project){
+        student.match.push(project);
+        project.assigned.push(student)
+        project.lecturer.match.push(project)
+    }
+
+    reject(sr: Student, project: Project){
+        delete sr.ranking[project.name];
+        this.relevantPreferences.pop();
+        
+        delete sr.match[project.name];
+        delete project.assigned[sr.name];
+        delete project.lecturer.match[project.name];
+    }
+
     match(): AlgorithmData {
 
         // assign each student to be free;
@@ -49,7 +80,7 @@ export abstract class SpaP extends MatchingAlgorithmExtension {
 
 
             // if all potential proposees are gone, remove 
-            if (si.ranking.length <= 0 || !this.getNextPotentialProposee(si)) {
+            if (this.agentIsFree(si)) {
                 this.freeAgentsOfGroup1.shift();
             } else {
 
@@ -96,6 +127,8 @@ export abstract class SpaP extends MatchingAlgorithmExtension {
     abstract shouldContinueMatching(student: Student): boolean;
 
     abstract provisionallyAssign(student: Student, preferredProject: Project, worstProject: Project): void;
+
+    abstract agentIsFree(student: Student): boolean;
 
     /** removeRuledOutPreferences group: */ 
     
