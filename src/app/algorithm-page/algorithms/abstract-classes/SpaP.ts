@@ -126,7 +126,7 @@ export abstract class SpaP extends MatchingAlgorithmExtension {
 
     abstract shouldContinueMatching(student: Student): boolean;
 
-    abstract provisionallyAssign(student: Student, preferredProject: Project, worstProject: Project): void;
+    //abstract provisionallyAssign(student: Student, preferredProject: Project, worstProject: Project): void;
 
     abstract agentIsFree(student: Student): boolean;
 

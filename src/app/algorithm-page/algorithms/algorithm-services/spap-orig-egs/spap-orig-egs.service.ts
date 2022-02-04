@@ -30,7 +30,7 @@ import { Student } from '../../interfaces/Student';
     }
 
     getNextPotentialProposee(student: Student): Project {
-        // return first project on si's list
+    // return first project on si's list
       return student.ranking[0];
     }
 

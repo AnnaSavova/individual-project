@@ -41,29 +41,33 @@ import { Student } from '../../interfaces/Student';
     getProjectLecturer(project: Project): Lecturer {
         return project.lecturer;
     }
-
-    reject(student: Student, project: Project): void {
-        throw new Error('Method not implemented.');
-    }
     
     checkStability(allMatches: Map<String, String[]>): boolean {
         throw new Error('Method not implemented.');
     }
 
     getNextPotentialProposee(student: Student): Project {
-        throw new Error('Method not implemented.');
+    // return first project on si's list
+      return student.ranking[0];
     }
 
     shouldContinueMatching(student: Student): boolean {
         return true;
     }
 
-    provisionallyAssign(student: Student, project: Project, worstProject: Project): void {
-        throw new Error('Method not implemented.');
-    }
     
-    breakAssignment(person: Student | Lecturer, potentialProposee: Project): void {
-        throw new Error('Method not implemented.');
+    getRandomUnpromoted(project){
+        let relevantStudents: Map<String, Student> = new Map();
+
+        for (let [key,value] of this.group1Agents){
+            if (value.match.includes(project) && !(this.isPromoted(value))){
+                relevantStudents.set(key, value);
+            }
+        }
+
+        // from: https://stackoverflow.com/questions/70205185/get-random-element-of-dictionary-in-typescript
+        let sr = this.group1Agents[Math.floor(Math.random() * Object.keys(relevantStudents).length)];
+        return sr;
     }
 
     applyTo(si: Student, preferredProject: Project, lecturer: Lecturer) {
@@ -80,12 +84,28 @@ import { Student } from '../../interfaces/Student';
                     // M U { (si, pj) }
                     this.matchUp(si, preferredProject);
                 }
+            // if lecturer is full and preferes their preferredPeoject to their worst project
             } else if ((lecturer.match.length = lecturer.capacity)
-                        && lecturer.ranking.indexOf(this.getLecturerWorstNonEmptyProject(lecturer)) < lecturer.ranking.indexOf(preferredProject)){
+                        && lecturer.ranking.indexOf(preferredProject) < lecturer.ranking.indexOf(this.getLecturerWorstNonEmptyProject(lecturer))){
                             this.reject(si, preferredProject);
             } else {
                 this.matchUp(si, preferredProject);
-                // TODO
+                
+                if (lecturer.match.length > lecturer.capacity){
+                    let pz = this.getLecturerWorstNonEmptyProject(lecturer);
+                    
+                    for (let i = 0; i < pz.assigned.length; i++){
+                        let sr: Student;
+                        // if the project is assigned to a non-promoted student
+                        if (!(this.isPromoted(pz.assigned[i]))){
+                            // reject a random unpromoted student
+                            sr = this.getRandomUnpromoted(pz);
+                        } else {
+                            sr = this.getRandomStudent(pz);
+                        }
+                        this.reject(sr, pz);
+                    }
+                }
             }
         }
     }
