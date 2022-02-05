@@ -99,7 +99,8 @@ import { Student } from '../../interfaces/Student';
     }
     
     checkStability(allMatches: Map<String, String[]>): boolean {
-        throw new Error('Method not implemented.');
+    // TODO change
+        return true;
     }
 
     // provisionally assign si to pj and lk;
