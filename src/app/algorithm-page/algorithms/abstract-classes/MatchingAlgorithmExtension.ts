@@ -11,7 +11,7 @@ export abstract class MatchingAlgorithmExtension {
     abstract group3Name: string; // projects in SpaP and ImprovedSpaP
 
     numberOfAgents: number;
-    numberOfGroup2Agents: number;
+    numberOfGroup2Agents: number;   // TODO Breaks here maybe
     numberOfGroup3Agents: number;
 
     freeAgentsOfGroup1: Array<String>;
@@ -149,7 +149,7 @@ export abstract class MatchingAlgorithmExtension {
 
         for (let student of Array.from(this.group1Agents.keys())) {
             tempCopyList = [];
-            for (let preferenceAgent of preferences.get(this.getLastCharacter(String(student)))) {
+            for (let preferenceAgent of preferences.get(this.getLastCharacter(String(student)))) {  // preferences.get is not a function or its return value is not iterable
                 tempCopyList.push(this.group3Agents.get(this.group3Name + preferenceAgent));
             }
             this.group1Agents.get(student).ranking = tempCopyList;
@@ -399,7 +399,7 @@ export abstract class MatchingAlgorithmExtension {
         this.generateAgents();
 
         if (preferences) {
-            this.populatePreferences(preferences);
+            this.populatePreferences(preferences);  // preferences.get is not a function or its return value is not iterable
         } else {
             this.generatePreferences();
         }
@@ -416,7 +416,7 @@ export abstract class MatchingAlgorithmExtension {
         this.group2CurrentPreferences = this.getRankings(this.group2Agents);
         this.originalGroup2CurrentPreferences = this.getRankings(this.group2Agents);
 
-        this.match();
+        this.match();   //TODO breaks here maybe
 
         this.stable = this.checkStability(this.getMatches());
 

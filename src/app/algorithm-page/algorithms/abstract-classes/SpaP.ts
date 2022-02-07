@@ -92,6 +92,7 @@ export abstract class SpaP extends MatchingAlgorithmExtension {
 
                 let agentLastChar = this.getLastCharacter(si.name);
                 let proposeeLastChar = this.getLastCharacter(preferredProject.name);
+                //TODO potentially breaks here
                 let lecturerLastChar = this.getLastCharacter(lecturer.name)
 
                 this.currentlySelectedAgents.push(proposeeLastChar);

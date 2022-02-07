@@ -20,7 +20,7 @@ describe('SpapImprovedEgsService', () => {
       let agent1Count: number = Math.floor(Math.random() * (9 - 2) + 2);
       let agent2Count: number = Math.floor(Math.random() * (9 - 2) + 2);
       let agent3Count: number = Math.floor(Math.random() * (9 - 2) + 2);
-      service.run(agent1Count, agent2Count, undefined, agent3Count); 
+      service.run(agent1Count, agent2Count, undefined, agent3Count);    // TODO breaks here maybe
       if (!service.stable) {
         stable = false;
       }
