@@ -18,8 +18,11 @@ describe('SpapOrigEgsService', () => {
     let stable: boolean = true;
     for (let i = 0; i < 10000; i++) {
       let agent1Count: number = Math.floor(Math.random() * (9 - 2) + 2);
+      console.log("Student number: ", agent1Count)
       let agent2Count: number = Math.floor(Math.random() * (9 - 2) + 2);
+      console.log("Lecturer number: ", agent2Count)
       let agent3Count: number = Math.floor(Math.random() * (9 - 2) + 2);
+      console.log("Project number: ", agent3Count)
       let preferences: Map<String, Array<String>> = new Map();
       service.run(agent1Count, agent2Count, preferences, agent3Count);    // TODO breaks here maybe
       if (!service.stable) {

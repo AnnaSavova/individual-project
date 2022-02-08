@@ -12,8 +12,8 @@ import { Student } from '../../interfaces/Student';
   export class SpapImprovedEgsService extends SpaP {
     
     group1Name = "student";
-    group2Name = "project";
-    group3Name = "lecturer";
+    group3Name = "project";
+    group2Name = "lecturer";
 
     lecturerCapacity : Map<string, number> = new Map();
     projectCapacity: Map<string, number> = new Map();

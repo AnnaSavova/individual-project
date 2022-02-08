@@ -74,6 +74,17 @@ export abstract class MatchingAlgorithmExtension {
         this.stable = false;
     }
 
+    // from: https://stackoverflow.com/questions/42739256/how-get-random-item-from-es6-map-or-set
+    getRandomKey(mapping){
+        let index = Math.floor(Math.random() * mapping.size);
+        let count = 0;
+        for (let key of mapping.keys()) {
+            if (count++ === index) {
+                return key;
+            }
+        }
+    }
+
     generateAgents() {
         // generate students
         for (let i = 1; i < this.numberOfAgents + 1; i++) {
@@ -114,13 +125,23 @@ export abstract class MatchingAlgorithmExtension {
         for (let i = 1; i < this.numberOfGroup3Agents + 1; i++) {
             let group3AgentName = this.group3Name + currLet;
 
+            //let selected = Math.floor(Math.random() * this.group2Agents.size);
+            // take random element from map. Get random num 0-element number, get random key and get that value; get in-between key 
+            
+            //let keys = Array.from(this.group2Agents.keys());
+            //let selected = Math.floor(Math.random() * keys.length)
+            let selected = this.getRandomKey(this.group2Agents);
+            let selectedLecturer: Lecturer = this.group2Agents[selected];
+            //let selectedLecturer = this.group2Agents.values()[selected];
+            console.log("group2agents: ", this.group2Agents, "selected:", selected, "selectedLecturer: ", selectedLecturer);
+            
             this.group3Agents.set(group3AgentName, {
                 name: group3AgentName,
-                lecturer: this.group2Agents[Math.random() * this.group2Agents.size],    // generates a lecturer for the project
+                lecturer: selectedLecturer,    // generates a lecturer for the project
                 capacity: 1,
                 assigned: new Array()
             });
-
+            console.log("group3agentName: ", group3AgentName, "group3Agent: ", this.group3Agents.get(group3AgentName));
             currLet = String.fromCharCode((((currLet.charCodeAt(0) + 1) - 65 ) % 26) + 65);
         }
     }
@@ -145,11 +166,14 @@ export abstract class MatchingAlgorithmExtension {
     }
 
     populatePreferences(preferences: Map<String, Array<String>>): void {
+        console.log("populatePreferences:", preferences);
         let tempCopyList: Project[];
 
         for (let student of Array.from(this.group1Agents.keys())) {
+            let sv = this.getLastCharacter(String(student));
+            console.log("sv: ", sv, "student: ", student);
             tempCopyList = [];
-            for (let preferenceAgent of preferences.get(this.getLastCharacter(String(student)))) {  // preferences.get is not a function or its return value is not iterable
+            for (let preferenceAgent of preferences.get(sv)) {  // preferences.get is not a function or its return value is not iterable
                 tempCopyList.push(this.group3Agents.get(this.group3Name + preferenceAgent));
             }
             this.group1Agents.get(student).ranking = tempCopyList;
@@ -398,17 +422,11 @@ export abstract class MatchingAlgorithmExtension {
         
         this.generateAgents();
 
-        if (preferences) {
-            this.populatePreferences(preferences);  // preferences.get is not a function or its return value is not iterable
+        if (preferences && preferences.size > 0) {
+            this.populatePreferences(preferences);
         } else {
             this.generatePreferences();
         }
-
-        //if (preferences2) {
-        //    this.populatePreferences(preferences2);
-        //} else {
-        //    this.generatePreferences();
-        //}
 
         this.group1CurrentPreferences = this.getRankings(this.group1Agents);
         this.originalGroup1CurrentPreferences = this.getRankings(this.group1Agents);

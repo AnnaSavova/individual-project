@@ -88,7 +88,9 @@ export abstract class SpaP extends MatchingAlgorithmExtension {
 
                 // first such project on si's list;
                 let preferredProject: Project = this.getNextPotentialProposee(si);
+                console.log("preferredProject: ", preferredProject);
                 let lecturer: Lecturer = this.getProjectLecturer(preferredProject);
+                console.log("lecturer: ", lecturer);
 
                 let agentLastChar = this.getLastCharacter(si.name);
                 let proposeeLastChar = this.getLastCharacter(preferredProject.name);
