@@ -74,17 +74,6 @@ export abstract class MatchingAlgorithmExtension {
         this.stable = false;
     }
 
-    // from: https://stackoverflow.com/questions/42739256/how-get-random-item-from-es6-map-or-set
-    getRandomKey(mapping){
-        let index = Math.floor(Math.random() * mapping.size);
-        let count = 0;
-        for (let key of mapping.keys()) {
-            if (count++ === index) {
-                return key;
-            }
-        }
-    }
-
     generateAgents() {
         // generate students
         for (let i = 1; i < this.numberOfAgents + 1; i++) {
@@ -125,15 +114,10 @@ export abstract class MatchingAlgorithmExtension {
         for (let i = 1; i < this.numberOfGroup3Agents + 1; i++) {
             let group3AgentName = this.group3Name + currLet;
 
-            //let selected = Math.floor(Math.random() * this.group2Agents.size);
-            // take random element from map. Get random num 0-element number, get random key and get that value; get in-between key 
-            
-            //let keys = Array.from(this.group2Agents.keys());
-            //let selected = Math.floor(Math.random() * keys.length)
-            let selected = this.getRandomKey(this.group2Agents);
-            let selectedLecturer: Lecturer = this.group2Agents[selected];
-            //let selectedLecturer = this.group2Agents.values()[selected];
-            console.log("group2agents: ", this.group2Agents, "selected:", selected, "selectedLecturer: ", selectedLecturer);
+            // from: https://stackoverflow.com/questions/42739256/how-get-random-item-from-es6-map-or-set
+            let selectedLecturer: Lecturer = Array.from(this.group2Agents.values())[Math.floor( 0.2 + Math.random() * this.group2Agents.size)];
+
+            // debug console.log("group2agents: ", this.group2Agents, "selectedLecturer: ", selectedLecturer);
             
             this.group3Agents.set(group3AgentName, {
                 name: group3AgentName,
@@ -141,7 +125,7 @@ export abstract class MatchingAlgorithmExtension {
                 capacity: 1,
                 assigned: new Array()
             });
-            console.log("group3agentName: ", group3AgentName, "group3Agent: ", this.group3Agents.get(group3AgentName));
+            //console.log("group3agentName: ", group3AgentName, "group3Agent: ", this.group3Agents.get(group3AgentName));
             currLet = String.fromCharCode((((currLet.charCodeAt(0) + 1) - 65 ) % 26) + 65);
         }
     }

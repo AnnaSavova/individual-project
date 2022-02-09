@@ -54,13 +54,17 @@ export abstract class SpaP extends MatchingAlgorithmExtension {
         project.lecturer.match.push(project)
     }
 
+    // TODO: rework reject and implementations
+
     reject(sr: Student, project: Project){
-        delete sr.ranking[project.name];
+        //delete sr.ranking[project.name];
         this.relevantPreferences.pop();
         
-        delete sr.match[project.name];
-        delete project.assigned[sr.name];
-        delete project.lecturer.match[project.name];
+        if (project.name in sr.match){
+            delete sr.match[project.name];
+            delete project.assigned[sr.name];
+            delete project.lecturer.match[project.name];
+        }
     }
 
     match(): AlgorithmData {
@@ -110,6 +114,10 @@ export abstract class SpaP extends MatchingAlgorithmExtension {
 
                 // student applies to project
                 this.applyTo(si, preferredProject, lecturer); 
+
+                if (this.shouldContinueMatching(si)) {
+                    this.freeAgentsOfGroup1.shift();
+                }
             }
         }
 
