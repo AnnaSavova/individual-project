@@ -68,9 +68,9 @@ export abstract class SpaP extends MatchingAlgorithmExtension {
     }
 
     match(): AlgorithmData {
-
+        console.log("MatchingAlgorithmExtension match");
         // assign each student to be free;
-        this.update(1);
+        this.update(1);     // TODO place breakpoint
 
         while (this.freeAgentsOfGroup1.length > 0) {
 
@@ -84,7 +84,7 @@ export abstract class SpaP extends MatchingAlgorithmExtension {
 
 
             // if all potential proposees are gone, remove 
-            if (this.agentIsFree(si)) {
+            if (this.agentIsFree(si)) {     // TODO rename;
                 this.freeAgentsOfGroup1.shift();
             } else {
 
@@ -98,8 +98,8 @@ export abstract class SpaP extends MatchingAlgorithmExtension {
 
                 let agentLastChar = this.getLastCharacter(si.name);
                 let proposeeLastChar = this.getLastCharacter(preferredProject.name);
-                //TODO potentially breaks here
-                let lecturerLastChar = this.getLastCharacter(lecturer.name)
+                
+                let lecturerLastChar = this.getLastCharacter(lecturer.name) //TODO potentially breaks here
 
                 this.currentlySelectedAgents.push(proposeeLastChar);
                 this.relevantPreferences.push(proposeeLastChar);

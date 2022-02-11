@@ -125,7 +125,7 @@ export abstract class MatchingAlgorithmExtension {
                 capacity: 1,
                 assigned: new Array()
             });
-            //console.log("group3agentName: ", group3AgentName, "group3Agent: ", this.group3Agents.get(group3AgentName));
+            console.log("group3agentName: ", group3AgentName, "group3Agent: ", this.group3Agents.get(group3AgentName));
             currLet = String.fromCharCode((((currLet.charCodeAt(0) + 1) - 65 ) % 26) + 65);
         }
     }
@@ -242,12 +242,12 @@ export abstract class MatchingAlgorithmExtension {
         let matches: Map<String, Array<String>> = new Map();
 
         for (let i = 1; i < this.numberOfAgents + 1; i++) {
-            let agentName: string = this.group1Name + String.fromCharCode(i + 64);
+            let agentName: string = this.group1Name + i.toString();
             let student: Student = this.group1Agents.get(agentName);
-
+            console.log("group1Agent: ", this.group1Agents, "agentName: ", agentName, "student: ", student);
             let matchList: Array<String> = new Array();
 
-            for (let match of student.match) {
+            for (let match of student.match) {  // TODO: student is undefined
                 matchList.push(match.name);
             }
             matches.set(student.name, matchList);
@@ -420,7 +420,7 @@ export abstract class MatchingAlgorithmExtension {
 
         this.match();   //TODO breaks here maybe
 
-        this.stable = this.checkStability(this.getMatches());
+        this.stable = this.checkStability(this.getMatches());   // TODO: undefined
 
         if (!this.stable) {
             console.log("Matching is not stable!");
