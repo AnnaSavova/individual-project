@@ -44,8 +44,10 @@ import { Student } from '../../interfaces/Student';
         
         if (lecturer.match.length > lecturer.capacity){
             let sr: Student = this.getRandomStudent(worstProject);
-            // M = M \ {(sr, pz)}
-            this.reject(sr, worstProject);
+            if (sr ){
+                // M = M \ {(sr, pz)}
+                this.reject(sr, worstProject);
+            }
         }
     }
 
@@ -78,7 +80,7 @@ import { Student } from '../../interfaces/Student';
     }
 
     applyTo(si: Student, preferredProject: Project, lecturer: Lecturer): void {
-        let pz = lecturer.ranking[-1];
+        let pz = lecturer.ranking[lecturer.ranking.length-1];
         // if lecturer is non-empty
         if (lecturer.match.length > 0){
             pz = this.getLecturerWorstNonEmptyProject(lecturer);

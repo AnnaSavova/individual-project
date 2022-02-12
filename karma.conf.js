@@ -25,12 +25,24 @@ module.exports = function (config) {
     colors: true,
     logLevel: config.LOG_INFO,
     autoWatch: true,
-    browsers: ['ChromeDebugging'],
+    browsers: ['Chrome'],
     customLaunchers: {
       ChromeDebugging: {
         base: 'Chrome',
-        flags: ['--remote-debugging-port=9333']
-      }
+        flags: [
+          "--remote-debugging-port=9222"
+        ]
+      },
+      ChromeHeadlessNoSandbox: {
+        base: "ChromeHeadless",
+        flags: [
+          "--no-sandbox", // required to run without privileges in docker
+          "--user-data-dir=/tmp/chrome-test-profile",
+          "--disable-web-security",
+          "--remote-debugging-port=9222",
+        ],
+        debug: true,
+      },
     },
     singleRun: false,
     restartOnFileChange: true

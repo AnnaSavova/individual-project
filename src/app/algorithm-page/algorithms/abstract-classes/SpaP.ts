@@ -44,8 +44,11 @@ export abstract class SpaP extends MatchingAlgorithmExtension {
         }
 
         // from: https://stackoverflow.com/questions/70205185/get-random-element-of-dictionary-in-typescript
-        let sr = this.group1Agents[Math.floor(Math.random() * Object.keys(relevantStudents).length)];
-        return sr;
+        let len = relevantStudents.size;
+        if (len > 0){
+            return Array.from(relevantStudents.values())[Math.floor(Math.random() * len)];
+        }
+        return undefined;
     }
 
     matchUp(student: Student, project: Project){
@@ -89,7 +92,7 @@ export abstract class SpaP extends MatchingAlgorithmExtension {
             } else {
 
                 this.update(2, {"%currentAgent%": si.name});
-
+ 
                 // first such project on si's list;
                 let preferredProject: Project = this.getNextPotentialProposee(si);
                 console.log("preferredProject: ", preferredProject);

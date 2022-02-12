@@ -115,7 +115,8 @@ export abstract class MatchingAlgorithmExtension {
             let group3AgentName = this.group3Name + currLet;
 
             // from: https://stackoverflow.com/questions/42739256/how-get-random-item-from-es6-map-or-set
-            let selectedLecturer: Lecturer = Array.from(this.group2Agents.values())[Math.floor( 0.2 + Math.random() * this.group2Agents.size)];
+            let randIndex = Math.floor(Math.random() * this.group2Agents.size);
+            let selectedLecturer: Lecturer = Array.from(this.group2Agents.values())[randIndex];
 
             // debug console.log("group2agents: ", this.group2Agents, "selectedLecturer: ", selectedLecturer);
             
@@ -398,11 +399,11 @@ export abstract class MatchingAlgorithmExtension {
     /** end of group */
 
     run(numberOfAgents: number, numberOfGroup2Agents: number = numberOfAgents, preferences: Map<String, Array<String>>, numberOfGroup3Agents: number): AlgorithmData {
-        if (numberOfGroup2Agents != numberOfAgents || numberOfGroup3Agents != numberOfAgents) {
-            this.initialise(numberOfAgents, numberOfGroup2Agents, numberOfGroup3Agents);
-        } else {
-            this.initialise(numberOfAgents, numberOfGroup2Agents, numberOfAgents); // order is student-lecturer-project
-        }
+        //if (numberOfGroup2Agents != numberOfAgents || numberOfGroup3Agents != numberOfAgents) {
+        this.initialise(numberOfAgents, numberOfGroup2Agents, numberOfGroup3Agents);
+        // } else {
+        //     this.initialise(numberOfAgents, numberOfGroup2Agents, numberOfAgents); // order is student-lecturer-project
+        // }
         
         this.generateAgents();
 
