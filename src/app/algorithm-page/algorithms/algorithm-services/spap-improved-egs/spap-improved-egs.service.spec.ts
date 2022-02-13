@@ -18,10 +18,13 @@ describe('SpapImprovedEgsService', () => {
     let stable: boolean = true;
     const startTotal = new Date().getTime();
     for (let i = 0; i < 100; i++) { 
-      console.log("Test correctness iteration:", i);
+      console.log("Improved SpaP iteration", i);
       let agent1Count: number = Math.floor(Math.random() * (9 - 2) + 2);
+      console.log("Student number: ", agent1Count)
       let agent2Count: number = Math.floor(Math.random() * (9 - 2) + 2);
+      console.log("Lecturer number: ", agent2Count)
       let agent3Count: number = Math.floor(Math.random() * (9 - 2) + 2);
+      console.log("Project number: ", agent3Count)
       let preferences: Map<String, Array<String>> = new Map();
       const start = new Date().getTime();
       service.run(agent1Count, agent2Count, preferences, agent3Count);    // TODO breaks here maybe

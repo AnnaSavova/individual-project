@@ -17,6 +17,7 @@ describe('SpapOrigEgsService', () => {
   it('test correctness x10000 (spap-orig-egs)', () => {
     let stable: boolean = true;
     for (let i = 0; i < 100; i++) {
+      console.log("Original SpaP iteration", i);
       let agent1Count: number = Math.floor(Math.random() * (9 - 2) + 2);
       console.log("Student number: ", agent1Count)
       let agent2Count: number = Math.floor(Math.random() * (9 - 2) + 2);

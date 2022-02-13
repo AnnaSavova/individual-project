@@ -422,6 +422,7 @@ export abstract class MatchingAlgorithmExtension {
         this.match();   //TODO breaks here maybe
 
         this.stable = this.checkStability(this.getMatches());   // TODO: undefined
+        console.log("Matches: ", this.getMatches());
 
         if (!this.stable) {
             console.log("Matching is not stable!");
