@@ -70,6 +70,44 @@ export abstract class SpaP extends MatchingAlgorithmExtension {
         }
     }
 
+    checkStability(allMatches: Map<String, Array<String>>): boolean {
+        let stability = true;
+
+        let currProject: Project;
+        let worstNonEmpty: Project = undefined;
+
+        let projectTracker: number = 0;
+
+        for (let sr of allMatches.keys()) {
+            let studentPreferences = this.group1CurrentPreferences.get(sr);
+            projectTracker = studentPreferences.indexOf(sr.match[0]);
+            //projectTracker = s.preferenceList.indexOf(s.proj);
+            
+            // For every project s prefers
+            for (let p = 0; p < projectTracker; p++) {
+                currProject = this.group3Agents.get(studentPreferences[p]);
+                // If currentProj is undercapacity and currentProj's lecturer is full
+                if (currProject.capacity != currProject.assigned.length) {
+                    if (currProject.lecturer.capacity === currProject.lecturer.match.length){
+                        worstNonEmpty = this.getLecturerWorstNonEmptyProject(currProject.lecturer);
+                        // If currentProj's lecturer prefers currentProj to their worst non empty project
+                        if (this.getProjectLecturer(currProject).ranking.indexOf(currProject) < this.getProjectLecturer(currProject).ranking.indexOf(worstNonEmpty)){
+                            console.log("Assigned student to full lecturer")
+                            return false;
+                        }
+                    }
+                    else {
+                        // if both are undersubscribed:
+                        console.log("Assigned student to undersubscribed lecturer")
+                        return false;
+                    }
+                }
+            }
+        }
+
+        return stability;
+    }
+
     match(): AlgorithmData {
         console.log("MatchingAlgorithmExtension match");
         // assign each student to be free;

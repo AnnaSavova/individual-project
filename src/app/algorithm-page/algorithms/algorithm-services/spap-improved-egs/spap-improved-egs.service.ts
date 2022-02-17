@@ -42,10 +42,12 @@ import { Student } from '../../interfaces/Student';
         return project.lecturer;
     }
     
-    checkStability(allMatches: Map<String, String[]>): boolean {
+    //checkStability(allMatches: Map<String, String[]>): boolean {
     // TODO change
-        return true;
-    }
+    //    let stability = true;
+
+    //    return stability;
+    //}
 
     getNextPotentialProposee(student: Student): Project {
     // return first project on si's list
@@ -62,7 +64,8 @@ import { Student } from '../../interfaces/Student';
         let relevantStudents: Map<String, Student> = new Map();
 
         for (let [key,value] of this.group1Agents){
-            if (value.match.includes(project) && !(this.isPromoted(value))){
+            //value.match.includes(project)
+            if ( value.match === project && !(this.isPromoted(value))){
                 relevantStudents.set(key, value);
             }
         }

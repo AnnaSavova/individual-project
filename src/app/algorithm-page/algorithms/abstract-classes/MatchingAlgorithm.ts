@@ -297,6 +297,7 @@ export abstract class MatchingAlgorithm {
     }
 
 
+    
     // check if no unmatched pair like each other more than their current partners
     checkStability(allMatches: Map<String, Array<String>>): boolean {
         let stability = true;
