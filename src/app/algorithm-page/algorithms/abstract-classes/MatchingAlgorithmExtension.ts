@@ -81,7 +81,7 @@ export abstract class MatchingAlgorithmExtension {
 
             this.group1Agents.set(group1AgentName, {
                 name: group1AgentName,
-                match: new Array(),
+                match: undefined,
                 ranking: new Array(),
                 promoted: false
             });
@@ -239,19 +239,20 @@ export abstract class MatchingAlgorithmExtension {
         this.algorithmData.commands.push(currentStep);
     }
 
-    getMatches(): Map<String, Array<String>> {
-        let matches: Map<String, Array<String>> = new Map();
+    getMatches(): Map<String, String> {
+
+        // needs to return student mapped to project
+        let matches: Map<String, String> = new Map();
 
         for (let i = 1; i < this.numberOfAgents + 1; i++) {
-            let agentName: string = this.group1Name + i.toString();
-            let student: Student = this.group1Agents.get(agentName);
-            console.log("group1Agent: ", this.group1Agents, "agentName: ", agentName, "student: ", student);
-            let matchList: Array<String> = new Array();
+            let studentName: string = this.group1Name + i.toString();
+            let sr: Student = this.group1Agents.get(studentName);
+            // let matchList: Array<String> = new Array();
 
-            for (let match of student.match) {  // TODO: student is undefined
-                matchList.push(match.name);
-            }
-            matches.set(student.name, matchList);
+            // for (let project of project.assigned) {
+            //     assignedList.push(student.name);
+            // }
+            matches.set(sr.name, sr.match.name);
         }
         return matches;
     }
@@ -419,9 +420,9 @@ export abstract class MatchingAlgorithmExtension {
         this.group2CurrentPreferences = this.getRankings(this.group2Agents);
         this.originalGroup2CurrentPreferences = this.getRankings(this.group2Agents);
 
-        this.match();   //TODO breaks here maybe
+        this.match();
 
-        this.stable = this.checkStability(this.getMatches());   // TODO: undefined
+        this.stable = this.checkStability(this.getMatches());
         console.log("Matches: ", this.getMatches());
 
         if (!this.stable) {
@@ -436,6 +437,6 @@ export abstract class MatchingAlgorithmExtension {
     abstract match(): AlgorithmData;
 
     // check if no unmatched pair like each other more than their current partners
-    abstract checkStability(allMatches: Map<String, Array<String>>): boolean;
+    abstract checkStability(allMatches: Map<String, String>): boolean;
 
 }

@@ -38,7 +38,7 @@ export abstract class SpaP extends MatchingAlgorithmExtension {
         let relevantStudents: Map<String, Student> = new Map();
 
         for (let [key,value] of this.group1Agents){
-            if (value.match.includes(project)){
+            if (value.match === project){
                 relevantStudents.set(key, value);
             }
         }
@@ -52,7 +52,7 @@ export abstract class SpaP extends MatchingAlgorithmExtension {
     }
 
     matchUp(student: Student, project: Project){
-        student.match.push(project);
+        student.match = project;
         project.assigned.push(student)
         project.lecturer.match.push(project)
     }
@@ -70,7 +70,7 @@ export abstract class SpaP extends MatchingAlgorithmExtension {
         }
     }
 
-    checkStability(allMatches: Map<String, Array<String>>): boolean {
+    checkStability(allMatches: Map<String, String>): boolean {
         let stability = true;
 
         let currProject: Project;
@@ -80,7 +80,7 @@ export abstract class SpaP extends MatchingAlgorithmExtension {
 
         for (let sr of allMatches.keys()) {
             let studentPreferences = this.group1CurrentPreferences.get(sr);
-            projectTracker = studentPreferences.indexOf(sr.match[0]);
+            projectTracker = studentPreferences.indexOf(sr.match.name);
             //projectTracker = s.preferenceList.indexOf(s.proj);
             
             // For every project s prefers

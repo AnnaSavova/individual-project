@@ -100,16 +100,16 @@ import { Student } from '../../interfaces/Student';
         } 
     }
     
-    checkStability(allMatches: Map<String, String[]>): boolean {
-    // TODO change
-        let stability = true;
+    // checkStability(allMatches: Map<String, String[]>): boolean {
+    // // TODO change
+    //     let stability = true;
         
-        // for all students
-        //for (let si of allMatches.keys()) {
-        //    let studentMatches = allMatches.get(si);
+    //     // for all students
+    //     //for (let si of allMatches.keys()) {
+    //     //    let studentMatches = allMatches.get(si);
         
-        return stability;
-    }
+    //     return stability;
+    // }
 
     // provisionally assign si to pj and lk;
 
