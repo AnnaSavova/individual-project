@@ -70,40 +70,72 @@ export abstract class SpaP extends MatchingAlgorithmExtension {
         }
     }
 
-    checkStability(allMatches: Map<String, String>): boolean {
-        let stability = true;
+    /** Check Stability */
+    
 
+    checkAssignedBlockPair(allMatches: Map <String, String>){
         let currProject: Project;
         let worstNonEmpty: Project = undefined;
-
+        
         let projectTracker: number = 0;
 
         for (let sr of allMatches.keys()) {
             let studentPreferences = this.group1CurrentPreferences.get(sr);
             projectTracker = studentPreferences.indexOf(sr.match.name);
-            //projectTracker = s.preferenceList.indexOf(s.proj);
-            
-            // For every project s prefers
-            for (let p = 0; p < projectTracker; p++) {
-                currProject = this.group3Agents.get(studentPreferences[p]);
-                // If currentProj is undercapacity and currentProj's lecturer is full
-                if (currProject.capacity != currProject.assigned.length) {
-                    if (currProject.lecturer.capacity === currProject.lecturer.match.length){
-                        worstNonEmpty = this.getLecturerWorstNonEmptyProject(currProject.lecturer);
-                        // If currentProj's lecturer prefers currentProj to their worst non empty project
-                        if (this.getProjectLecturer(currProject).ranking.indexOf(currProject) < this.getProjectLecturer(currProject).ranking.indexOf(worstNonEmpty)){
-                            console.log("Assigned student to full lecturer")
-                            return false;
-                        }
-                    }
-                    else {
-                        // if both are undersubscribed:
-                        console.log("Assigned student to undersubscribed lecturer")
-                        return false;
-                    }
-                }
-            }
+
         }
+    }
+
+    checkUnassigned(students: Map <String, Student>){
+        let currProject: Project;
+        let worstNonEmpty: Project = undefined;
+    }
+
+
+    checkStability(allMatches: Map<String, String>): boolean {
+        let stability = true;
+
+        this.checkAssignedBlockPair(allMatches);
+
+        let matchless: Map<String, Student>;
+
+        // matchless = this.group1Agents - allMatches
+
+        this.checkUnassigned(matchless);
+
+
+        // let currProject: Project;
+        // let worstNonEmpty: Project = undefined;
+
+        // let projectTracker: number = 0;
+
+        // for (let sr of allMatches.keys()) {
+        //     let studentPreferences = this.group1CurrentPreferences.get(sr);
+        //     projectTracker = studentPreferences.indexOf(sr.match.name);
+        //     //projectTracker = s.preferenceList.indexOf(s.proj);
+            
+        //     // For every project s prefers
+        //     for (let p = 0; p < projectTracker; p++) {
+        //         currProject = this.group3Agents.get(studentPreferences[p]);
+        //         // If currentProj is undercapacity and currentProj's lecturer is full
+        //         if (currProject.capacity != currProject.assigned.length) {
+        //             if (currProject.lecturer.capacity === currProject.lecturer.match.length){
+        //                 worstNonEmpty = this.getLecturerWorstNonEmptyProject(currProject.lecturer);
+        //                 // If currentProj's lecturer prefers currentProj to their worst non empty project
+        //                 if (this.getProjectLecturer(currProject).ranking.indexOf(currProject) < this.getProjectLecturer(currProject).ranking.indexOf(worstNonEmpty)){
+        //                     console.log("Student assignment to full lecturer")
+        //                     return false;
+        //                 }
+        //             }
+        //             else {
+        //                 // if both are undersubscribed:
+        //                 console.log("Student assignment to undersubscribed lecturer")
+        //                 return false;
+        //             }
+        //         }
+        //     }
+        // }
+        
 
         return stability;
     }
