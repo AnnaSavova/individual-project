@@ -63,8 +63,8 @@ export abstract class SpaP extends MatchingAlgorithmExtension {
         //delete sr.ranking[project.name];
         this.relevantPreferences.pop();
         
-        if (project.name in sr.match){
-            delete sr.match[project.name];
+        if (project.name == sr.match.name){
+            sr.match = undefined;
             delete project.assigned[sr.name];
             delete project.lecturer.match[project.name];
         }
@@ -170,9 +170,7 @@ export abstract class SpaP extends MatchingAlgorithmExtension {
  
                 // first such project on si's list;
                 let preferredProject: Project = this.getNextPotentialProposee(si);
-                console.log("preferredProject: ", preferredProject);
                 let lecturer: Lecturer = this.getProjectLecturer(preferredProject);
-                console.log("lecturer: ", lecturer);
 
                 let agentLastChar = this.getLastCharacter(si.name);
                 let proposeeLastChar = this.getLastCharacter(preferredProject.name);

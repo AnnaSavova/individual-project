@@ -109,7 +109,7 @@ export abstract class MatchingAlgorithmExtension {
         }
 
         // generate projects
-        let currLet = 'a'
+        let currLet = 'A'
 
         for (let i = 1; i < this.numberOfGroup3Agents + 1; i++) {
             let group3AgentName = this.group3Name + currLet;
@@ -247,12 +247,17 @@ export abstract class MatchingAlgorithmExtension {
         for (let i = 1; i < this.numberOfAgents + 1; i++) {
             let studentName: string = this.group1Name + i.toString();
             let sr: Student = this.group1Agents.get(studentName);
-            // let matchList: Array<String> = new Array();
+            //console.log("getMatches iteration:", i, "Student: ", sr, "StudentName:", studentName);
 
-            // for (let project of project.assigned) {
-            //     assignedList.push(student.name);
-            // }
-            matches.set(sr.name, sr.match.name);
+            let matchName: String = '';
+
+            if (sr.match != undefined){
+                matchName = sr.match.name;
+            } else {
+                matchName = "No Assignment"
+            }
+
+            matches.set(sr.name, matchName);    // TODO sth is undefined
         }
         return matches;
     }
