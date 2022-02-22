@@ -30,7 +30,7 @@ import { Student } from '../../interfaces/Student';
         student.promoted = false;
     }
 
-    agentIsFree(student: Student): boolean {
+    agentToFree(student: Student): boolean {
         if (this.isPromoted(student)
             && (student.ranking.length <= 0 || !this.getNextPotentialProposee(student))) {
             return true;

@@ -259,6 +259,7 @@ export abstract class MatchingAlgorithmExtension {
 
             matches.set(sr.name, matchName);    // TODO sth is undefined
         }
+        console.log("getMatches", matches)
         return matches;
     }
 
@@ -427,12 +428,14 @@ export abstract class MatchingAlgorithmExtension {
 
         this.match();
 
+        console.log("Students before stabilityCheck", this.group1Agents)
         this.stable = this.checkStability(this.getMatches());
+        console.log("Students after stabilityCheck",this.group1Agents)
         console.log("Matches: ", this.getMatches());
 
         if (!this.stable) {
             console.log("Matching is not stable!");
-            return undefined;
+            //return undefined;
         }
 
         return this.algorithmData;

@@ -18,7 +18,7 @@ import { Student } from '../../interfaces/Student';
     //lecturerCapacity : Map<string, number> = new Map();
     //projectCapacity: Map<string, number> = new Map();
 
-    agentIsFree(si: Student): boolean {
+    agentToFree(si: Student): boolean {
         if (si.ranking.length <= 0 || !this.getNextPotentialProposee(si)){
             return true
         }
@@ -42,9 +42,10 @@ import { Student } from '../../interfaces/Student';
         // provisionally assign si to pj and lk;
         let lecturer = project.lecturer
         
+        // if lecturer oversubscribed
         if (lecturer.match.length > lecturer.capacity){
             let sr: Student = this.getRandomStudent(worstProject);
-            if (sr ){
+            if (sr){
                 // M = M \ {(sr, pz)}
                 this.reject(sr, worstProject);
             }
@@ -87,8 +88,9 @@ import { Student } from '../../interfaces/Student';
         }
         if (this.fullAndNonEmpty(lecturer, preferredProject, pz)){
             // delete pj from si's list
-            this.reject(si, preferredProject);
-
+            delete si.ranking[preferredProject.name]
+            
+            //this.reject(si, preferredProject);
         } else {
             // M U { (si, pj) }
             this.matchUp(si, preferredProject);

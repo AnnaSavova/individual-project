@@ -79,69 +79,123 @@ export abstract class SpaP extends MatchingAlgorithmExtension {
         
         let projectTracker: number = 0;
 
+        console.log("stability allMatches", allMatches);
         for (let sr of allMatches.keys()) {
+            let student: Student = this.group1Agents.get(sr);
             let studentPreferences = this.group1CurrentPreferences.get(sr);
-            projectTracker = studentPreferences.indexOf(sr.match.name);
+
             
-            // if project undersubscribed 
-            if (currProject.capacity < currProject.assigned.length) {
-                // and its lecturer is full
-                if (currProject.lecturer.capacity == currProject.lecturer.match.length){
-                    worstNonEmpty = this.getLecturerWorstNonEmptyProject(currProject.lecturer)
-                    // if lecturer prefers currProject to their worst non empty
-                    if (currProject.lecturer.ranking.indexOf(currProject) < currProject.lecturer.ranking.indexOf(worstNonEmpty)){
-                        console.log("Student assigned with full teacher who prefers currProject");
+            if (allMatches.get(sr) != "No Assignment"){
+                console.log("stability sr", allMatches.get(sr));
+                console.log("stability student", student);
+
+                //projectTracker = studentPreferences.indexOf(student.match.name);
+                
+                // if project undersubscribed 
+                if (currProject.capacity < currProject.assigned.length) {
+                    // and its lecturer is full
+                    if (currProject.lecturer.capacity == currProject.lecturer.match.length){
+                        worstNonEmpty = this.getLecturerWorstNonEmptyProject(currProject.lecturer)
+                        // if lecturer prefers currProject to their worst non empty
+                        if (currProject.lecturer.ranking.indexOf(currProject) < currProject.lecturer.ranking.indexOf(worstNonEmpty)){
+                            console.log("Student assigned with full teacher who prefers currProject");
+                            return false;
+                        }
+                    // if project and lecturer both undersubscribed
+                    } else {
+                        console.log("Student assigned with undersubscribed lecturer");
                         return false;
                     }
-                // if project and lecturer both undersubscribed
-                } else {
-                    console.log("Student assigned with undersubscribed lecturer");
-                    return false;
                 }
-            }
-        }
-        return true;
-    }
-
-    checkUnassigned(matchlessStudents: Map <String, Student>){
-        let currProject: Project;
-        let worstNonEmpty: Project = undefined;
-
-        for (let sr of matchlessStudents.keys()){
-            let studentPreferences = this.group1CurrentPreferences.get(sr);
-            // for every project in that student's list
-            for (let pj: number = 0; pj < studentPreferences.length; pj++){
-                currProject = this.group3Agents.get(studentPreferences[pj]);
-                // if lecturer is full
-                if (currProject.lecturer.capacity == currProject.lecturer.match.length){
-                    worstNonEmpty = this.getLecturerWorstNonEmptyProject(currProject.lecturer);
-                    // if currProject is preferred over worstNonEmptyProject
-                    if (currProject.lecturer.ranking.indexOf(currProject) < currProject.lecturer.ranking.indexOf(worstNonEmpty)){
-                        console.log("Unassigned student with full teacher")
-                        return false;
+                return true
+            } else {
+                //return false;
+                
+                // for every project in that student's list
+                for (let pj: number = 0; pj < studentPreferences.length; pj++){
+                    currProject = this.group3Agents.get(studentPreferences[pj]);
+                    // if lecturer is full
+                    if (currProject.lecturer.capacity == currProject.lecturer.match.length){
+                        worstNonEmpty = this.getLecturerWorstNonEmptyProject(currProject.lecturer);
+                        // if currProject is preferred over worstNonEmptyProject
+                        if (currProject.lecturer.ranking.indexOf(currProject) < currProject.lecturer.ranking.indexOf(worstNonEmpty)){
+                            console.log("Unassigned student with full teacher")
+                            return false;
+                        } else {
+                            console.log("Unassinged student with undersubscribed lecturer");
+                            return false;
+                        }
                     }
-                } else {
-                    console.log("Unassinged student with undersubscribed lecturer");
-                    return false;
                 }
+                return true;
             }
+            
+            
+            // 
+            // if (currProject.capacity < currProject.assigned.length) {
+            //     // and its lecturer is full
+            //     if (currProject.lecturer.capacity == currProject.lecturer.match.length){
+            //         worstNonEmpty = this.getLecturerWorstNonEmptyProject(currProject.lecturer)
+            //         // if lecturer prefers currProject to their worst non empty
+            //         if (currProject.lecturer.ranking.indexOf(currProject) < currProject.lecturer.ranking.indexOf(worstNonEmpty)){
+            //             console.log("Student assigned with full teacher who prefers currProject");
+            //             return false;
+            //         }
+            //     // if project and lecturer both undersubscribed
+            //     } else {
+            //         console.log("Student assigned with undersubscribed lecturer");
+            //         return false;
+            //     }
+            // }
         }
-        return true;
+        //return true;
     }
+
+    // checkUnassigned(matchlessStudents: Map <String, Student>){
+    //     let currProject: Project;
+    //     let worstNonEmpty: Project = undefined;
+
+    //     for (let sr of matchlessStudents.keys()){
+    //         let studentPreferences = this.group1CurrentPreferences.get(sr);
+    //         // for every project in that student's list
+    //         for (let pj: number = 0; pj < studentPreferences.length; pj++){
+    //             currProject = this.group3Agents.get(studentPreferences[pj]);
+    //             // if lecturer is full
+    //             if (currProject.lecturer.capacity == currProject.lecturer.match.length){
+    //                 worstNonEmpty = this.getLecturerWorstNonEmptyProject(currProject.lecturer);
+    //                 // if currProject is preferred over worstNonEmptyProject
+    //                 if (currProject.lecturer.ranking.indexOf(currProject) < currProject.lecturer.ranking.indexOf(worstNonEmpty)){
+    //                     console.log("Unassigned student with full teacher")
+    //                     return false;
+    //                 }
+    //             } else {
+    //                 console.log("Unassinged student with undersubscribed lecturer");
+    //                 return false;
+    //             }
+    //         }
+    //     }
+    //     return true;
+    // }
 
 
     checkStability(allMatches: Map<String, String>): boolean {
 
-        let assignedStability = this.checkAssignedBlockPair(allMatches);
+        let stability = this.checkAssignedBlockPair(allMatches);
 
-        let matchless: Map<String, Student>;
+        // let matchless: Map<String, Student>;
 
-        // matchless = this.group1Agents - allMatches
-
-        let unassignedStability = this.checkUnassigned(matchless);
+        // // matchless = this.group1Agents - allMatches
         
-        if (assignedStability && unassignedStability){return true;}
-         else { return false};
+        // for (let si of this.group1Agents.keys()){
+        //     console.log("matchless si:", si);
+        // }
+
+        // let unassignedStability = this.checkUnassigned(matchless);
+        
+        // if (assignedStability && unassignedStability){return true;}
+        //  else { return false};
+
+        return stability;
 
     }
 
@@ -162,7 +216,7 @@ export abstract class SpaP extends MatchingAlgorithmExtension {
 
 
             // if all potential proposees are gone, remove 
-            if (this.agentIsFree(si)) {     // TODO rename;
+            if (this.agentToFree(si)) {     // TODO rename;
                 this.freeAgentsOfGroup1.shift();
             } else {
 
@@ -215,7 +269,7 @@ export abstract class SpaP extends MatchingAlgorithmExtension {
 
     //abstract provisionallyAssign(student: Student, preferredProject: Project, worstProject: Project): void;
 
-    abstract agentIsFree(student: Student): boolean;
+    abstract agentToFree(student: Student): boolean;
 
     /** removeRuledOutPreferences group: */ 
     
