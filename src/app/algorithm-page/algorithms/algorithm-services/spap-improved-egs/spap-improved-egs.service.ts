@@ -51,7 +51,6 @@ import { Student } from '../../interfaces/Student';
 
     getNextPotentialProposee(student: Student): Project {
     // return first project on si's list
-        console.log("student: ", student, "ranking: ", student.ranking.length);
         return student.ranking[0];
     }
 
@@ -73,6 +72,14 @@ import { Student } from '../../interfaces/Student';
         // from: https://stackoverflow.com/questions/70205185/get-random-element-of-dictionary-in-typescript
         let sr = this.group1Agents[Math.floor(Math.random() * Object.keys(relevantStudents).length)];
         return sr;
+    }
+
+    guaranteedStability(matchCount: number, stabilityTracker: number) {
+        if (matchCount / stabilityTracker >= (3/2)){
+            return true;
+        } else {
+            return false;
+        }
     }
 
     applyTo(si: Student, preferredProject: Project, lecturer: Lecturer) {

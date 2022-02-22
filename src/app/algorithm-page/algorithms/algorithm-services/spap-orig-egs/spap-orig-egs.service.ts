@@ -101,6 +101,20 @@ import { Student } from '../../interfaces/Student';
             this.freeAgentsOfGroup1.shift();
         } 
     }
+
+    guaranteedStability(matchCount: number, stabilityTracker: number) {
+        // if ((Math.floor(matchCount / stabilityTracker) < 2) && (stabilityTracker > 0)){
+        //     return true;
+        // } else {
+        //     return false;
+        // }
+
+        if ((stabilityTracker / matchCount) >= (1/2)){
+            return true;
+        } else {
+            return false;
+        }
+    }
     
     // checkStability(allMatches: Map<String, String[]>): boolean {
     // // TODO change

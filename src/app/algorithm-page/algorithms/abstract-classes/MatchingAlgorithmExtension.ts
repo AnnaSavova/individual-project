@@ -126,7 +126,6 @@ export abstract class MatchingAlgorithmExtension {
                 capacity: 1,
                 assigned: new Array()
             });
-            console.log("group3agentName: ", group3AgentName, "group3Agent: ", this.group3Agents.get(group3AgentName));
             currLet = String.fromCharCode((((currLet.charCodeAt(0) + 1) - 65 ) % 26) + 65);
         }
     }
@@ -156,7 +155,6 @@ export abstract class MatchingAlgorithmExtension {
 
         for (let student of Array.from(this.group1Agents.keys())) {
             let sv = this.getLastCharacter(String(student));
-            console.log("sv: ", sv, "student: ", student);
             tempCopyList = [];
             for (let preferenceAgent of preferences.get(sv)) {  // preferences.get is not a function or its return value is not iterable
                 tempCopyList.push(this.group3Agents.get(this.group3Name + preferenceAgent));
@@ -259,7 +257,6 @@ export abstract class MatchingAlgorithmExtension {
 
             matches.set(sr.name, matchName);    // TODO sth is undefined
         }
-        console.log("getMatches", matches)
         return matches;
     }
 
@@ -428,9 +425,7 @@ export abstract class MatchingAlgorithmExtension {
 
         this.match();
 
-        console.log("Students before stabilityCheck", this.group1Agents)
         this.stable = this.checkStability(this.getMatches());
-        console.log("Students after stabilityCheck",this.group1Agents)
         console.log("Matches: ", this.getMatches());
 
         if (!this.stable) {
