@@ -73,14 +73,13 @@ export abstract class SpaP extends MatchingAlgorithmExtension {
     /** Check Stability */
     
 
-    checkStability(allMatches: Map <String, String>){
+    assignedBlockPair(allMatches: Map<String, String>): number{
         let currProject: Project;
         let worstNonEmpty: Project = undefined;
         
         let projectTracker: number = 0;
 
         //let stabilityTracker: number = 0;
-        let matchCount: number = allMatches.size;
         let stabilityTracker: number = allMatches.size;
         console.log("Initial stabilityTracker: ", stabilityTracker);
 
@@ -117,38 +116,15 @@ export abstract class SpaP extends MatchingAlgorithmExtension {
                         }
                     }
                 }
-                //return true
-            } 
-            // else {
-            //     //return false;
-                
-            //     // for every project in that student's list
-            //     for (let pj: number = 0; pj < student.ranking.length; pj++){
-            //         currProject = this.group3Agents.get(student.ranking[pj].name);
-            //         // if lecturer is full
-            //         if (currProject.lecturer.capacity == currProject.lecturer.match.length){
-            //             worstNonEmpty = this.getLecturerWorstNonEmptyProject(currProject.lecturer);
-            //             // if currProject is preferred over worstNonEmptyProject
-            //             if (currProject.lecturer.ranking.indexOf(currProject) < currProject.lecturer.ranking.indexOf(worstNonEmpty)){
-            //                 console.log("Unassigned student", student.name, "with full lecturer", currProject.lecturer.name)
-            //                 //return false;
-            //                 stabilityTracker--;
-            //                 console.log("stabilityTracker: ", stabilityTracker);
-            //             }
-            //         } else {
-            //             console.log("Unassigned student", student.name, "with undersubscribed lecturer", currProject.lecturer.name);
-            //             //return false;
-            //             stabilityTracker--;
-            //             console.log("stabilityTracker: ", stabilityTracker);
-            //         }
-            //     }
-            //     //return true;
-            // }
+            }
         }
-        //return true;
+        return stabilityTracker;
+    }
 
-        currProject = undefined;
-        worstNonEmpty = undefined;
+    unassignedBlockPair(allMatches: Map<String, String>, stabilityTracker: number): number {
+        let currProject: Project;
+        let worstNonEmpty: Project;
+        stabilityTracker = allMatches.size;
 
         for (let sr of allMatches.keys()) {
             let student: Student = this.group1Agents.get(sr);
@@ -164,17 +140,24 @@ export abstract class SpaP extends MatchingAlgorithmExtension {
                         if (currProject.lecturer.ranking.indexOf(currProject) < currProject.lecturer.ranking.indexOf(worstNonEmpty)){
                             console.log("Unassigned student", student.name, "with full lecturer", currProject.lecturer.name)
                             stabilityTracker--;
-                            console.log("stabilityTracker: ", stabilityTracker);
                         }
-                    } else {
+                    } else if (currProject.lecturer.capacity > currProject.lecturer.match.length){
                         console.log("Unassigned student", student.name, "with undersubscribed lecturer", currProject.lecturer.name);
                         stabilityTracker--;
-                        console.log("stabilityTracker: ", stabilityTracker);
+                    } else {
+                        stabilityTracker++;
                     }
                 }
             }
         }
-        
+        return stabilityTracker;
+    }
+
+    checkStability(allMatches: Map <String, String>){
+        let matchCount: number = allMatches.size;
+
+        let stabilityTracker = this.assignedBlockPair(allMatches);
+        stabilityTracker = this.unassignedBlockPair(allMatches, stabilityTracker);
         console.log("stabilityTracker: ", stabilityTracker, "out of", matchCount);
 
         let stability = this.guaranteedStability(matchCount, stabilityTracker);
