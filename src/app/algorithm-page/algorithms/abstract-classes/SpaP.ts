@@ -26,6 +26,7 @@ export abstract class SpaP extends MatchingAlgorithmExtension {
     
     fullAndNonEmpty(lecturer: Lecturer, preferredProject: Project, worstProject: Project): boolean{
         // if project is full
+
         if (preferredProject.assigned.length === preferredProject.capacity
             // or (if lecturer is full and preferredProject is lecturer's worst non empty project)
             || (lecturer.match.length === lecturer.capacity && preferredProject === worstProject)){
@@ -130,6 +131,8 @@ export abstract class SpaP extends MatchingAlgorithmExtension {
             let student: Student = this.group1Agents.get(sr);
 
             if (allMatches.get(sr) == "No Assignment"){
+                let updateTracker: boolean = false;
+
                 // for every project in that student's list
                 for (let pj: number = 0; pj < student.ranking.length; pj++){
                     currProject = this.group3Agents.get(student.ranking[pj].name);
@@ -139,14 +142,17 @@ export abstract class SpaP extends MatchingAlgorithmExtension {
                         // if currProject is preferred over worstNonEmptyProject
                         if (currProject.lecturer.ranking.indexOf(currProject) < currProject.lecturer.ranking.indexOf(worstNonEmpty)){
                             console.log("Unassigned student", student.name, "with full lecturer", currProject.lecturer.name)
-                            stabilityTracker--;
+                            //stabilityTracker--;
+                            updateTracker = true;
                         }
                     } else if (currProject.lecturer.capacity > currProject.lecturer.match.length){
                         console.log("Unassigned student", student.name, "with undersubscribed lecturer", currProject.lecturer.name);
-                        stabilityTracker--;
-                    } else {
-                        stabilityTracker++;
+                        //stabilityTracker--;
+                        updateTracker = true;
                     }
+                }
+                if (updateTracker){
+                    stabilityTracker--;
                 }
             }
         }
@@ -182,7 +188,7 @@ export abstract class SpaP extends MatchingAlgorithmExtension {
 
 
             // if all potential proposees are gone, remove 
-            if (this.agentToFree(si)) {     // TODO rename;
+            if (this.agentToFree(si)) {     
                 this.freeAgentsOfGroup1.shift();
             } else {
 

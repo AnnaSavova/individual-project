@@ -69,6 +69,10 @@ import { Student } from '../../interfaces/Student';
             }
         }
 
+        if (relevantStudents.size == 0){
+            return undefined;
+        }
+
         // from: https://stackoverflow.com/questions/70205185/get-random-element-of-dictionary-in-typescript
         let sr = this.group1Agents[Math.floor(Math.random() * Object.keys(relevantStudents).length)];
         return sr;
@@ -83,41 +87,65 @@ import { Student } from '../../interfaces/Student';
     }
 
     applyTo(si: Student, preferredProject: Project, lecturer: Lecturer) {
-        if (si.ranking.length = 0 && !this.isPromoted(si)){
+        console.log("SpaP iteration")
+        if (si.ranking.length = 0 && !this.isPromoted(si) && si.match == undefined){
             this.promote(si);
-        } else {
-            if (this.fullAndNonEmpty){
-                // if the student is unpromoted and no unpromoted student is matched with preferredProject
-                if (!this.isPromoted(si)) {
-                    this.reject(si, preferredProject);
-                } else{
-                    // reject random unpromoted student in M (pj)
+        }
+        // preferred project and its lecturer are already known from SpaP.ts
 
-                    // M U { (si, pj) }
-                    this.matchUp(si, preferredProject);
-                }
-            // if lecturer is full and preferes their preferredPeoject to their worst project
-            } else if ((lecturer.match.length = lecturer.capacity)
-                        && lecturer.ranking.indexOf(preferredProject) < lecturer.ranking.indexOf(this.getLecturerWorstNonEmptyProject(lecturer))){
-                            this.reject(si, preferredProject);
-            } else {
+        //if the project and the lecturer are both full and the project is the lecturer's worst nonempty project
+        if (this.fullAndNonEmpty(lecturer, preferredProject, lecturer.ranking[lecturer.ranking.length-1])){
+            // if the student is unpromoted or no unpromoted student in M(pj)
+            if (!this.isPromoted(si) || this.getRandomUnpromoted(preferredProject) === undefined) {
+                console.log("Rejection condition A between", si, "and", preferredProject);
+                this.reject(si, preferredProject);
+            } else{
+                // reject random unpromoted student in M (pj)
+                let sr = this.getRandomUnpromoted(preferredProject);
+                console.log("Rejection condition A.2 between", sr, "and", preferredProject)
+                this.reject(sr, preferredProject);
+
+                // M U { (si, pj) }
                 this.matchUp(si, preferredProject);
+            }
+        // if lecturer is full and prefers their preferredProject to their worst project
+        } else if ((lecturer.match.length = lecturer.capacity)
+                    && lecturer.ranking.indexOf(preferredProject) < lecturer.ranking.indexOf(this.getLecturerWorstNonEmptyProject(lecturer))){
+                        console.log("Rejection condition B between", si, "and", preferredProject)
+                        this.reject(si, preferredProject);
+        } else {
+            this.matchUp(si, preferredProject);
                 
-                if (lecturer.match.length > lecturer.capacity){
-                    let pz = this.getLecturerWorstNonEmptyProject(lecturer);
-                    
-                    for (let i = 0; i < pz.assigned.length; i++){
-                        let sr: Student;
-                        // if the project is assigned to a non-promoted student
-                        if (!(this.isPromoted(pz.assigned[i]))){
-                            // reject a random unpromoted student
-                            sr = this.getRandomUnpromoted(pz);
-                        } else {
-                            sr = this.getRandomStudent(pz);
-                        }
-                        this.reject(sr, pz);
+            if (lecturer.match.length > lecturer.capacity){
+                let pz = this.getLecturerWorstNonEmptyProject(lecturer); // lk prefers pj over pz
+                
+                let unpromotedReject: boolean = false;
+                //let randomReject: boolean = false;
+
+                for (let i = 0; i < pz.assigned.length; i++){
+                    // if the project is assigned to a non-promoted student
+                    if (!(this.isPromoted(pz.assigned[i]))){
+                        // reject a random unpromoted student
+                        //sr = this.getRandomUnpromoted(pz);
+                        unpromotedReject = true;
+                    // } else {
+                    //     //sr = this.getRandomStudent(pz);
+                    //     randomReject = true;
+                    // }
+                    // let sr: Student;
+                    // this.reject(sr, pz);
                     }
                 }
+                
+                let sr: Student;
+
+                if (unpromotedReject = true){
+                    sr = this.getRandomUnpromoted(pz);
+                } else{
+                    sr = this.getRandomStudent(pz);
+                }
+                console.log("Rejection condition C between", sr, "and", pz);
+                this.reject(sr, pz);
             }
         }
     }
