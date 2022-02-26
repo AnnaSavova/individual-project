@@ -30,6 +30,8 @@ module.exports = function (config) {
       ChromeDebugging: {
         base: 'Chrome',
         flags: [
+          "--disable-gpu",
+          "--no-sandbox",
           "--remote-debugging-port=9222"
         ]
       },

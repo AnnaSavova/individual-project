@@ -64,6 +64,7 @@ import { Student } from '../../interfaces/Student';
 
         for (let [key,value] of this.group1Agents){
             //value.match.includes(project)
+            console.log("randomUnpromoted key",key,"value", value);
             if ( value.match === project && !(this.isPromoted(value))){
                 relevantStudents.set(key, value);
             }
@@ -141,11 +142,16 @@ import { Student } from '../../interfaces/Student';
 
                 if (unpromotedReject = true){
                     sr = this.getRandomUnpromoted(pz);
+                    console.log("unpromotedReject", unpromotedReject, "sr", sr);
                 } else{
                     sr = this.getRandomStudent(pz);
+                    console.log("unpromotedReject", unpromotedReject, "sr", sr);
                 }
                 console.log("Rejection condition C between", sr, "and", pz);
-                this.reject(sr, pz);
+
+                if (sr != undefined){
+                    this.reject(sr, pz);
+                }
             }
         }
     }

@@ -9,19 +9,30 @@ export abstract class SpaP extends MatchingAlgorithmExtension {
     
 
     getLecturerWorstNonEmptyProject(lk : Lecturer): Project {
-        let positionMap: Map<number, Project> = new Map();
+        // let positionMap: Map<number, Project> = new Map();
 
-        for (let project of lk.match){
-            positionMap.set(this.findPositionInLecturerMatches(lk, project), project);
-        }
+        // for (let project of lk.ranking){
+        //     console.log("WorstNonEmpty project", project);
+        //     positionMap.set(this.findPositionInLecturerMatches(lk, project), project);
+        // }
 
-        let pz = positionMap.get(Math.max(...Array.from(positionMap.keys())));
+        // let pz = positionMap.get(Math.max(...Array.from(positionMap.keys())));
         
-        while (pz.assigned.length === 0) {
-            pz = positionMap.get(Math.max(...Array.from(positionMap.keys())));
+        // while (pz.assigned.length === 0) {
+        //     pz = positionMap.get(Math.max(...Array.from(positionMap.keys())));
+        // }
+        
+        // return pz
+
+        let lRankings = lk.ranking;
+
+        // reverse() example from: https://www.codegrepper.com/code-examples/javascript/iterate+array+in+reverse+order++typescript
+        for (let project of lRankings.reverse()){
+            if (project.assigned.length > 0){
+                return project;
+            }
         }
-        
-        return pz
+        return undefined;
     }
     
     fullAndNonEmpty(lecturer: Lecturer, preferredProject: Project, worstProject: Project): boolean{

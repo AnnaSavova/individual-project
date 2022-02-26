@@ -275,8 +275,8 @@ export abstract class MatchingAlgorithmExtension {
         throw new Error("No such student found");
     }
 
-    findPositionInLecturerMatches(currentAgent: Lecturer, agentToFind: Project): number {
-        let position = currentAgent.ranking.findIndex((person: { name: string; }) => person.name == agentToFind.lecturer.name);
+    findPositionInLecturerMatches(lecturer: Lecturer, project: Project): number {
+        let position = lecturer.ranking.findIndex((person: { name: string; }) => person.name == project.lecturer.name);
         return position;
     }
     /** end of group */
