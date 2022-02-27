@@ -75,10 +75,12 @@ export abstract class SpaP extends MatchingAlgorithmExtension {
         //delete sr.ranking[project.name];
         this.relevantPreferences.pop();
         
-        if (project.name == sr.match.name){
-            sr.match = undefined;
-            delete project.assigned[sr.name];
-            delete project.lecturer.match[project.name];
+        if (sr.match != undefined){
+            if (project.name == sr.match.name){
+                sr.match = undefined;
+                delete project.assigned[sr.name];
+                delete project.lecturer.match[project.name];
+            }
         }
     }
 
