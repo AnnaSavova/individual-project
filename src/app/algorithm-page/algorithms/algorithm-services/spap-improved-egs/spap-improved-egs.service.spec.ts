@@ -14,7 +14,7 @@ describe('SpapImprovedEgsService', () => {
     expect(service).toBeTruthy();
   });
 
-  fit('test correctness x10000 (spap-improved-egs)', () => {
+  it('test correctness x10000 (spap-improved-egs)', () => {
     let stable: boolean = true;
     const startTotal = new Date().getTime();
     for (let i = 0; i < 100; i++) { 
