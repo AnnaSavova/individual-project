@@ -109,7 +109,7 @@ import { Student } from '../../interfaces/Student';
         //     return false;
         // }
 
-        if ((stabilityTracker / matchCount) >= (1/2)){
+        if ((stabilityTracker / matchCount) >= (1.0/2)){
             return true;
         } else {
             return false;

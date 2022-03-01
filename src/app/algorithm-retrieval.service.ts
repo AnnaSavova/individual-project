@@ -5,6 +5,7 @@ import { EgsStableMarriageService } from './algorithm-page/algorithms/algorithm-
 import { GsStableMarriageService } from './algorithm-page/algorithms/algorithm-services/smp-man-gs/gs-stable-marriage.service';
 import { SpapImprovedEgsService } from './algorithm-page/algorithms/algorithm-services/spap-improved-egs/spap-improved-egs.service';
 import { SpapOrigEgsService } from './algorithm-page/algorithms/algorithm-services/spap-orig-egs/spap-orig-egs.service';
+import { AlgorithmExtension } from './AlgorithmExtension';
 
 
 // ------------------------------------------------------- ALGORITHM TEMPLATE
@@ -37,7 +38,7 @@ export class AlgorithmRetrievalService {
   numberOfGroup2Agents: number = 5;
   numberOfGroup3Agents: number = 5;
 
-  mapOfAvailableAlgorithms: Map<String, Algorithm> = new Map([
+  mapOfAvailableAlgorithms: Map<String, Algorithm | AlgorithmExtension> = new Map([
     [
       "smp-man-gs", {
         id: "smp-man-gs",
@@ -295,7 +296,7 @@ export class AlgorithmRetrievalService {
     public SpapImprovedEgsService: SpapImprovedEgsService,
   ) { }
 
-  getListOfAlgorithms(): Array<Algorithm> {
+  getListOfAlgorithms(): Array<Algorithm | AlgorithmExtension> {
     return Array.from(this.mapOfAvailableAlgorithms.values());
   }
 
