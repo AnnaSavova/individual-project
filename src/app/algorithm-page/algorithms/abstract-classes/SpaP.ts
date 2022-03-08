@@ -9,23 +9,35 @@ export abstract class SpaP extends MatchingAlgorithmExtension {
     
 
     getLecturerWorstNonEmptyProject(lk : Lecturer): Project {
-        let positionMap: Map<number, Project> = new Map();
+        // let positionMap: Map<number, Project> = new Map();
 
-        for (let project of lk.match){
-            positionMap.set(this.findPositionInLecturerMatches(lk, project), project);
-        }
+        // for (let project of lk.ranking){
+        //     console.log("WorstNonEmpty project", project);
+        //     positionMap.set(this.findPositionInLecturerMatches(lk, project), project);
+        // }
 
-        let pz = positionMap.get(Math.max(...Array.from(positionMap.keys())));
+        // let pz = positionMap.get(Math.max(...Array.from(positionMap.keys())));
         
-        while (pz.assigned.length === 0) {
-            pz = positionMap.get(Math.max(...Array.from(positionMap.keys())));
+        // while (pz.assigned.length === 0) {
+        //     pz = positionMap.get(Math.max(...Array.from(positionMap.keys())));
+        // }
+        
+        // return pz
+
+        let lRankings = lk.ranking;
+
+        // reverse() example from: https://www.codegrepper.com/code-examples/javascript/iterate+array+in+reverse+order++typescript
+        for (let project of lRankings.reverse()){
+            if (project.assigned.length > 0){
+                return project;
+            }
         }
-        
-        return pz
+        return undefined;
     }
     
     fullAndNonEmpty(lecturer: Lecturer, preferredProject: Project, worstProject: Project): boolean{
         // if project is full
+
         if (preferredProject.assigned.length === preferredProject.capacity
             // or (if lecturer is full and preferredProject is lecturer's worst non empty project)
             || (lecturer.match.length === lecturer.capacity && preferredProject === worstProject)){
@@ -38,7 +50,7 @@ export abstract class SpaP extends MatchingAlgorithmExtension {
         let relevantStudents: Map<String, Student> = new Map();
 
         for (let [key,value] of this.group1Agents){
-            if (value.match.includes(project)){
+            if (value.match === project){
                 relevantStudents.set(key, value);
             }
         }
@@ -52,7 +64,7 @@ export abstract class SpaP extends MatchingAlgorithmExtension {
     }
 
     matchUp(student: Student, project: Project){
-        student.match.push(project);
+        student.match = project;
         project.assigned.push(student)
         project.lecturer.match.push(project)
     }
@@ -63,11 +75,113 @@ export abstract class SpaP extends MatchingAlgorithmExtension {
         //delete sr.ranking[project.name];
         this.relevantPreferences.pop();
         
-        if (project.name in sr.match){
-            delete sr.match[project.name];
-            delete project.assigned[sr.name];
-            delete project.lecturer.match[project.name];
+        if (sr.match != undefined){
+            if (project.name == sr.match.name){
+                sr.match = undefined;
+                delete project.assigned[sr.name];
+                delete project.lecturer.match[project.name];
+            }
         }
+    }
+
+    /** Check Stability */
+    
+
+    assignedBlockPair(allMatches: Map<String, String>): number{
+        let currProject: Project;
+        let worstNonEmpty: Project = undefined;
+        
+        let projectTracker: number = 0;
+
+        //let stabilityTracker: number = 0;
+        let stabilityTracker: number = allMatches.size;
+        console.log("Initial stabilityTracker: ", stabilityTracker);
+
+        for (let sr of allMatches.keys()) {
+            let student: Student = this.group1Agents.get(sr);
+            //let studentPreferences: String[] = this.group1CurrentPreferences.get(sr);
+
+            
+            if (allMatches.get(sr) != "No Assignment"){
+
+                projectTracker = student.ranking.indexOf(student.match);
+                
+                // for every project student prefers
+                for (let pj: number = 0; pj < projectTracker; pj++){
+                    currProject = student.ranking[pj];
+                    // if project undersubscribed 
+                    if (currProject.capacity < currProject.assigned.length) {
+                        // and its lecturer is full
+                        if (currProject.lecturer.capacity == currProject.lecturer.match.length){
+                            worstNonEmpty = this.getLecturerWorstNonEmptyProject(currProject.lecturer)
+                            // if lecturer prefers currProject to their worst non empty
+                            if (currProject.lecturer.ranking.indexOf(currProject) < currProject.lecturer.ranking.indexOf(worstNonEmpty)){
+                                console.log("Student", student.name, "assigned with full lecturer", currProject.lecturer.name, "who prefers currProject");
+                                //return false;
+                                stabilityTracker--;
+                                console.log("stabilityTracker: ", stabilityTracker);
+                            }
+                        // if project and lecturer both undersubscribed
+                        } else {
+                            console.log("Student", student.name, "assigned with undersubscribed lecturer", currProject.lecturer.name);
+                            //return false;
+                            stabilityTracker--;
+                            console.log("stabilityTracker: ", stabilityTracker);
+                        }
+                    }
+                }
+            }
+        }
+        return stabilityTracker;
+    }
+
+    unassignedBlockPair(allMatches: Map<String, String>, stabilityTracker: number): number {
+        let currProject: Project;
+        let worstNonEmpty: Project;
+        stabilityTracker = allMatches.size;
+
+        for (let sr of allMatches.keys()) {
+            let student: Student = this.group1Agents.get(sr);
+
+            if (allMatches.get(sr) == "No Assignment"){
+                let updateTracker: boolean = false;
+
+                // for every project in that student's list
+                for (let pj: number = 0; pj < student.ranking.length; pj++){
+                    currProject = this.group3Agents.get(student.ranking[pj].name);
+                    // if lecturer is full
+                    if (currProject.lecturer.capacity == currProject.lecturer.match.length){
+                        worstNonEmpty = this.getLecturerWorstNonEmptyProject(currProject.lecturer);
+                        // if currProject is preferred over worstNonEmptyProject
+                        if (currProject.lecturer.ranking.indexOf(currProject) < currProject.lecturer.ranking.indexOf(worstNonEmpty)){
+                            console.log("Unassigned student", student.name, "with full lecturer", currProject.lecturer.name)
+                            //stabilityTracker--;
+                            updateTracker = true;
+                        }
+                    } else if (currProject.lecturer.capacity > currProject.lecturer.match.length){
+                        console.log("Unassigned student", student.name, "with undersubscribed lecturer", currProject.lecturer.name);
+                        //stabilityTracker--;
+                        updateTracker = true;
+                    }
+                }
+                if (updateTracker){
+                    stabilityTracker--;
+                }
+            }
+        }
+        return stabilityTracker;
+    }
+
+    checkStability(allMatches: Map <String, String>){
+        let matchCount: number = allMatches.size;
+
+        let stabilityTracker = this.assignedBlockPair(allMatches);
+        stabilityTracker = this.unassignedBlockPair(allMatches, stabilityTracker);
+        console.log("stabilityTracker: ", stabilityTracker, "out of", matchCount);
+
+        let stability = this.guaranteedStability(matchCount, stabilityTracker);
+
+        return stability;
     }
 
     match(): AlgorithmData {
@@ -87,7 +201,7 @@ export abstract class SpaP extends MatchingAlgorithmExtension {
 
 
             // if all potential proposees are gone, remove 
-            if (this.agentIsFree(si)) {     // TODO rename;
+            if (this.agentToFree(si)) {     
                 this.freeAgentsOfGroup1.shift();
             } else {
 
@@ -95,9 +209,7 @@ export abstract class SpaP extends MatchingAlgorithmExtension {
  
                 // first such project on si's list;
                 let preferredProject: Project = this.getNextPotentialProposee(si);
-                console.log("preferredProject: ", preferredProject);
                 let lecturer: Lecturer = this.getProjectLecturer(preferredProject);
-                console.log("lecturer: ", lecturer);
 
                 let agentLastChar = this.getLastCharacter(si.name);
                 let proposeeLastChar = this.getLastCharacter(preferredProject.name);
@@ -142,7 +254,9 @@ export abstract class SpaP extends MatchingAlgorithmExtension {
 
     //abstract provisionallyAssign(student: Student, preferredProject: Project, worstProject: Project): void;
 
-    abstract agentIsFree(student: Student): boolean;
+    abstract agentToFree(student: Student): boolean;
+
+    abstract guaranteedStability(matchCount: number, stabilityTracker: number);
 
     /** removeRuledOutPreferences group: */ 
     

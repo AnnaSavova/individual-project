@@ -18,7 +18,7 @@ import { Student } from '../../interfaces/Student';
     //lecturerCapacity : Map<string, number> = new Map();
     //projectCapacity: Map<string, number> = new Map();
 
-    agentIsFree(si: Student): boolean {
+    agentToFree(si: Student): boolean {
         if (si.ranking.length <= 0 || !this.getNextPotentialProposee(si)){
             return true
         }
@@ -42,9 +42,10 @@ import { Student } from '../../interfaces/Student';
         // provisionally assign si to pj and lk;
         let lecturer = project.lecturer
         
+        // if lecturer oversubscribed
         if (lecturer.match.length > lecturer.capacity){
             let sr: Student = this.getRandomStudent(worstProject);
-            if (sr ){
+            if (sr){
                 // M = M \ {(sr, pz)}
                 this.reject(sr, worstProject);
             }
@@ -87,8 +88,9 @@ import { Student } from '../../interfaces/Student';
         }
         if (this.fullAndNonEmpty(lecturer, preferredProject, pz)){
             // delete pj from si's list
-            this.reject(si, preferredProject);
-
+            delete si.ranking[preferredProject.name]
+            
+            //this.reject(si, preferredProject);
         } else {
             // M U { (si, pj) }
             this.matchUp(si, preferredProject);
@@ -99,11 +101,31 @@ import { Student } from '../../interfaces/Student';
             this.freeAgentsOfGroup1.shift();
         } 
     }
-    
-    checkStability(allMatches: Map<String, String[]>): boolean {
-    // TODO change
-        return true;
+
+    guaranteedStability(matchCount: number, stabilityTracker: number) {
+        // if ((Math.floor(matchCount / stabilityTracker) < 2) && (stabilityTracker > 0)){
+        //     return true;
+        // } else {
+        //     return false;
+        // }
+
+        if ((stabilityTracker / matchCount) >= (1.0/2)){
+            return true;
+        } else {
+            return false;
+        }
     }
+    
+    // checkStability(allMatches: Map<String, String[]>): boolean {
+    // // TODO change
+    //     let stability = true;
+        
+    //     // for all students
+    //     //for (let si of allMatches.keys()) {
+    //     //    let studentMatches = allMatches.get(si);
+        
+    //     return stability;
+    // }
 
     // provisionally assign si to pj and lk;
 

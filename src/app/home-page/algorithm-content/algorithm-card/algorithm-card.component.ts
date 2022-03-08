@@ -38,6 +38,12 @@ export class AlgorithmCardComponent implements OnInit {
     Validators.max(9)
   ]);
 
+  numberOfGroup3Agents = new FormControl('', [
+    Validators.required,
+    Validators.min(1),
+    Validators.max(9)
+  ]);
+
   // matcher = new MyErrorStateMatcher();
 
   constructor(public algorithmService: AlgorithmRetrievalService, public router: Router) { }
@@ -54,6 +60,17 @@ export class AlgorithmCardComponent implements OnInit {
       this.algorithmService.numberOfGroup2Agents = this.numberOfGroup1Agents.value;
     } else {
       this.algorithmService.numberOfGroup2Agents = this.numberOfGroup2Agents.value;
+    }
+
+    // in case of 3 agents
+    if (this.algorithmService.currentAlgorithm.id == "spap-orig-egs" || this.algorithmService.currentAlgorithm.id == "spap-improved-egs"){
+      if (this.numberOfGroup3Agents.value == '') {
+        this.algorithmService.numberOfGroup3Agents = this.numberOfGroup1Agents.value;
+      } else {
+        this.algorithmService.numberOfGroup3Agents = this.numberOfGroup3Agents.value;
+      }
+    } else {
+      this.algorithmService.numberOfGroup3Agents = 0;
     }
 
 

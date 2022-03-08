@@ -91,6 +91,20 @@ export class CanvasService {
       this.radiusOfCircles = 30;
     }
 
+    // if algorithm is spap
+    if (this.algService.currentAlgorithm.id == "spap-orig-egs" || this.algService.currentAlgorithm.id == "spap-improved-egs"){
+      if (this.algService.numberOfGroup3Agents == 8) {
+        LHSHeightOffset = 8;
+        this.radiusOfCircles = 27;
+      } else if (this.algService.numberOfGroup3Agents == 9){
+        RHSHeightOffset = 6;
+        this.radiusOfCircles = 21;
+      } else {
+        RHSHeightOffset = 0;
+        this.radiusOfCircles = 30;
+      }
+    }
+
     let effectiveHeight: number = canvas.height - (canvas.height * this.yMargin);
     let spaceBetweenCircles: number = (effectiveHeight / this.algService.numberOfGroup1Agents) + LHSHeightOffset;
     
@@ -165,6 +179,19 @@ export class CanvasService {
         this.positions["circle" + i] = {
           positionX: (this.currentCommand["algorithmSpecificData"]["hospitalCapacity"] ? canvas.width * this.xMargin - 35 : canvas.width * this.xMargin),
           positionY: canvasMiddle + (spaceBetweenCircles / 2) + ((i - Math.ceil((this.algService.numberOfGroup1Agents / 2) + 1)) * spaceBetweenCircles)
+        }
+      }
+
+      let helpX = this.currentCommand["algorithmSpecificData"]["hospitalCapacity"] ? canvas.width * this.xMargin - 35 : canvas.width * this.xMargin;
+
+      // if spap, repeat algorithm but the circles are drawn halfway
+      if (this.algService.currentAlgorithm.id == "spap-orig-egs" || this.algService.currentAlgorithm.id == "spap-improved-egs"){
+        for (let i = Math.ceil((this.algService.numberOfGroup1Agents / 2)) + 2; i < this.algService.numberOfGroup1Agents + 1; i++) {
+          let helpY = (spaceBetweenCircles / 2) + ((i - Math.ceil((this.algService.numberOfGroup1Agents / 2) + 1)) * spaceBetweenCircles);
+          this.positions["circle" + i] = {
+            positionX: helpX/2,
+            positionY: canvasMiddle + helpY/2
+          }
         }
       }
 

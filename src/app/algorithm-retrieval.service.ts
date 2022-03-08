@@ -5,6 +5,7 @@ import { EgsStableMarriageService } from './algorithm-page/algorithms/algorithm-
 import { GsStableMarriageService } from './algorithm-page/algorithms/algorithm-services/smp-man-gs/gs-stable-marriage.service';
 import { SpapImprovedEgsService } from './algorithm-page/algorithms/algorithm-services/spap-improved-egs/spap-improved-egs.service';
 import { SpapOrigEgsService } from './algorithm-page/algorithms/algorithm-services/spap-orig-egs/spap-orig-egs.service';
+import { AlgorithmExtension } from './AlgorithmExtension';
 
 
 // ------------------------------------------------------- ALGORITHM TEMPLATE
@@ -37,7 +38,7 @@ export class AlgorithmRetrievalService {
   numberOfGroup2Agents: number = 5;
   numberOfGroup3Agents: number = 5;
 
-  mapOfAvailableAlgorithms: Map<String, Algorithm> = new Map([
+  mapOfAvailableAlgorithms: Map<String, Algorithm | AlgorithmExtension> = new Map([
     [
       "smp-man-gs", {
         id: "smp-man-gs",
@@ -164,7 +165,7 @@ export class AlgorithmRetrievalService {
         equalGroups: true,
         algorithm: "SpaP",
         service: this.SpapOrigEgsService,
-        description: "The algorithm assigns <b>projects</b>, offered by <b>lecturers</b> to <b>students</b>. <br><br> This is the project oriented version of the algorithm.<br><br> To do this an extension of the Gale/Shapley algorithm for Hospital-Residents Problem is utilised",
+        description: "The algorithm assigns <b>projects</b>, offered by <b>lecturers</b> to <b>students</b>. <br><br> This is the <b>project-oriented<b> version of the algorithm.<br><br> To do this an extension of the Gale/Shapley algorithm for Hospital-Residents Problem is utilised",
         helpTextMap: {
           1: "Clear the matches of all students, projects and lecturers",
           2: "While there are some students who are not assigned and have a non-empty list, select the next one (%currentAgent%)",
@@ -295,7 +296,7 @@ export class AlgorithmRetrievalService {
     public SpapImprovedEgsService: SpapImprovedEgsService,
   ) { }
 
-  getListOfAlgorithms(): Array<Algorithm> {
+  getListOfAlgorithms(): Array<Algorithm | AlgorithmExtension> {
     return Array.from(this.mapOfAvailableAlgorithms.values());
   }
 
