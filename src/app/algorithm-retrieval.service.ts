@@ -165,7 +165,7 @@ export class AlgorithmRetrievalService {
         equalGroups: true,
         algorithm: "SpaP",
         service: this.SpapOrigEgsService,
-        description: "The algorithm assigns <b>projects</b>, offered by <b>lecturers</b> to <b>students</b>. <br><br> This is the project oriented version of the algorithm.<br><br> To do this an extension of the Gale/Shapley algorithm for Hospital-Residents Problem is utilised",
+        description: "The algorithm assigns <b>projects</b>, offered by <b>lecturers</b> to <b>students</b>. <br><br> This is the <b>project-oriented<b> version of the algorithm.<br><br> To do this an extension of the Gale/Shapley algorithm for Hospital-Residents Problem is utilised",
         helpTextMap: {
           1: "Clear the matches of all students, projects and lecturers",
           2: "While there are some students who are not assigned and have a non-empty list, select the next one (%currentAgent%)",
