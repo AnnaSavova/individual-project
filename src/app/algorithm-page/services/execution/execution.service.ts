@@ -30,9 +30,9 @@ export class ExecutionService {
 
     let commandList: AlgorithmData;
     if (algorithmService instanceof MatchingAlgorithm) {
-      let commandList: AlgorithmData = algorithmService.run(numberOfAgents, numberOfGroup2Agents, preferences);
+      commandList = algorithmService.run(numberOfAgents, numberOfGroup2Agents, preferences);
     } else if (algorithmService instanceof MatchingAlgorithmExtension){
-      let commandList: AlgorithmData = algorithmService.run(numberOfAgents, numberOfGroup2Agents, preferences, numberOfGroup3Agents);
+      commandList = algorithmService.run(numberOfAgents, numberOfGroup2Agents, preferences, numberOfGroup3Agents);
     } else{
       throw new Error("algorithmService must be instance of MatchingAlgorithm or MatchingAlgorithmExtension");
     }
