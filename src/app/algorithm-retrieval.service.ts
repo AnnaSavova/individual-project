@@ -161,7 +161,7 @@ export class AlgorithmRetrievalService {
       "spap-orig-egs", {
         id: "spap-orig-egs",
         name: "Student-Project Allocation with Project Priority",
-        orientation: ["Student", "Project", "Lecturer"],
+        orientation: ["Student", "Lecturer", "Project"],
         equalGroups: true,
         algorithm: "SpaP",
         service: this.SpapOrigEgsService,
@@ -219,7 +219,7 @@ export class AlgorithmRetrievalService {
       "spap-improved-egs", {
         id: "spap-improved-egs",
         name: "Improved Student-Project Allocation with Project Priority",
-        orientation: ["Student", "Project", "Lecturer"],
+        orientation: ["Student", "Lecturer", "Project"],
         equalGroups: true,
         algorithm: "ImprovedSpaP",
         service: this.SpapImprovedEgsService,

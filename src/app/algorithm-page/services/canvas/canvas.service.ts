@@ -305,6 +305,41 @@ export class CanvasService {
 
   }
 
+  // Follows pattern of drawRHSCircles()
+  drawMidCircles() {
+    if (this.algService.currentAlgorithm.id == "spap-orig-egs" || this.algService.currentAlgorithm.id == "spap-improved-egs"){
+      this.ctx.beginPath();
+      this.ctx.fillStyle = "#32ff6f"; // color chosen to be in the "middle" of the two other colors
+      let currentLetter = 'A';
+
+      for (let i = 1; i < this.algService.numberOfGroup3Agents + 1; i++) {
+        let posX: number = this.positions["circle" + currentLetter].positionX / 1.4;
+        let posY: number = this.positions["circle" + currentLetter].positionY;
+
+        this.ctx.moveTo(posX + this.radiusOfCircles, posY);
+        this.ctx.arc(posX, posY, this.radiusOfCircles, 0, Math.PI * 2, true)
+        currentLetter = String.fromCharCode((((currentLetter.charCodeAt(0) + 1) - 65 ) % 26) + 65);
+      }
+
+      this.ctx.fill();
+      this.ctx.stroke();
+
+      currentLetter = 'A';
+
+      // Draw text (numbers)
+      for (let i = 1; i < this.algService.numberOfGroup3Agents + 1; i++) {
+        let posX: number = this.positions["circle" + currentLetter].positionX / 1.4;
+        let posY: number = this.positions["circle" + currentLetter].positionY;
+
+        this.ctx.fillStyle = "black";
+        this.ctx.font = this.radiusOfCircles + 'px Arial';
+
+        this.ctx.fillText(currentLetter, posX - 9, posY + 11, 20);
+        currentLetter = String.fromCharCode((((currentLetter.charCodeAt(0) + 1) - 65 ) % 26) + 65);
+      }
+    }
+  }
+
 
   drawRHSCircles() {
     this.ctx.beginPath();
@@ -616,6 +651,7 @@ export class CanvasService {
 
     // draw circles
     this.drawLHSCircles();
+    this.drawMidCircles();
     this.drawRHSCircles();
 
     if (this.currentCommand) {
